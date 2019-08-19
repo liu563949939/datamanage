@@ -1,0 +1,15 @@
+spring:
+  datasource:
+    username: zhxt_dba
+    password: pmis_2013
+    url: jdbc:mysql://localhost:3306/datamanage?serverTimezone=Hongkong&useUnicode=true&characterEncoding=UTF-8
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: none
+      naming:
+        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+    database-platform: org.hibernate.dialect.MySQL5InnoDBDialect
+
+server:
+  port: 2000

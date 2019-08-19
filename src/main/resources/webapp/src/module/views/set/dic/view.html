@@ -1,0 +1,67 @@
+<div class="layui-form" lay-filter="dic-form-list" style="padding: 0 15px 0 0;">
+  <!--ID(隐藏)-->
+  <div class="layui-form-item">
+    <div class="layui-input-inline">
+      <script type="text/html" template>
+        <input type="hidden" name="id" value="{{ d.params.id || '' }}"  placeholder="ID" autocomplete="off" class="layui-input">
+          </script>
+    </div>
+  </div>
+
+  <!--字典名-->
+  <div class="layui-form-item">
+    <label class="layui-form-label"><span style="color: red; ">*</span>字典名：</label>
+    <div class="layui-input-inline">
+      <script type="text/html" template>
+        <input type="text" name="name" value="{{ d.params.name || '' }}" lay-verify="required" placeholder="请输入字典名" autocomplete="off" class="layui-input">
+      </script>
+    </div>
+  </div>
+
+  <!--字典代码-->
+  <div class="layui-form-item">
+    <label class="layui-form-label"><span style="color: red; ">*</span>代码：</label>
+    <div class="layui-input-inline">
+      <script type="text/html" template>
+        <input type="text" name="code" value="{{ d.params.code || '' }}" lay-verify="required" placeholder="请输入字典代码" autocomplete="off" class="layui-input">
+      </script>
+    </div>
+  </div>
+
+  <!--字典值-->
+  <div class="layui-form-item">
+    <label class="layui-form-label"><span style="color: red; ">*</span>字典值：</label>
+    <div class="layui-input-inline">
+      <script type="text/html" template>
+        <input type="text" name="value" value="{{ d.params.value || '' }}" lay-verify="required" placeholder="请输入字典值" autocomplete="off" class="layui-input">
+      </script>
+    </div>
+  </div>
+
+  <!--字典父代码-->
+  <div class="layui-form-item">
+    <label class="layui-form-label"><span style="color: red; ">*</span>父代码：</label>
+    <div class="layui-input-inline">
+      <script type="text/html" template>
+        <input type="text" id = 'pcode' name="pcode" value="{{ d.params.pcode || '' }}" readonly placeholder="请输入字典父代码" autocomplete="off" class="layui-input">
+      </script>
+    </div>
+  </div>
+
+  <!--按钮提交-->
+  <div class="layui-form-item">
+    <input type="button" lay-submit lay-filter="form-submit-dic" value="确认" class="layui-btn" style="float:right">
+  </div>
+</div>
+
+<script type="text/html" template lay-done="layui.data.sendParams(d.params)">
+</script>
+
+
+<script>
+    layui.use([],function () {
+      layui.data.sendParams = function(nodeId) {
+
+      }
+    })
+</script>

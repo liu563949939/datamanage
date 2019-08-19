@@ -1,0 +1,138 @@
+<div>
+    <div class="layui-form" lay-filter="layuiadmin-app-form-list" id="layuiadmin-app-form-list"
+        style="padding: 20px 30px 0 0;">
+        <!--ID(隐藏2)-->
+        <div class="layui-form-item">
+            <div class="layui-input-inline">
+                <script type="text/html" template>
+                    <input type="hidden" name="id" value="{{ d.params.id || '' }}" placeholder="用户ID" autocomplete="off"
+                        class="layui-input">
+                </script>
+            </div>
+        </div>
+
+        <!--权码和名称-->
+        <div class="layui-form-item">
+            <label class="layui-form-label"><span style="color: red;">*</span>按钮编码:</label>
+            <div class="layui-input-inline">
+                <script type="text/html" template>
+                    <input type="text" name="code" value="{{ d.params.code || '' }}" lay-verify="required"
+                        placeholder="请输入按钮编码" autocomplete="off" class="layui-input">
+                </script>
+            </div>
+            <label class="layui-form-label"><span style="color: red;">*</span>按钮名称:</label>
+            <div class="layui-input-inline">
+                <script type="text/html" template>
+                    <input type="text" name="name" value="{{ d.params.name || '' }}" lay-verify="required"
+                        placeholder="请输入按钮名称" autocomplete="off" class="layui-input">
+                </script>
+            </div>
+        </div>
+
+        <!--icon和isvisible-->
+        <div class="layui-form-item">
+            <label class="layui-form-label">图标:</label>
+            <div class="layui-input-inline">
+                <script type="text/html" template>
+                    <input type="hidden" id="icon" name="icon" value="{{ d.params.icon || '' }}" class="layui-input">
+                    <!-- <input type="text" name="icon" id="iconPicker" lay-filter="iconPicker" class="layui-input"> -->
+                </script>
+                <input type="text" name="iconPicker" id="iconPicker" lay-filter="iconPicker" class="layui-input">
+
+
+            </div>
+            <label class="layui-form-label">显示情况:</label>
+            <div class="layui-input-inline">
+                <select name="isVisible" id="isVisible">
+                </select>
+
+            </div>
+        </div>
+
+        <!--events和description-->
+        <div class="layui-form-item">
+            <label class="layui-form-label">事件:</label>
+            <div class="layui-input-inline">
+                <script type="text/html" template>
+                    <input type="text" name="events" value="{{ d.params.events || '' }}" placeholder="请输入事件"
+                        autocomplete="off" class="layui-input">
+                </script>
+            </div>
+        </div>
+        <!--次序-->
+        <div class="layui-form-item">
+            <label class="layui-form-label"><span style="color: red;">*</span>次序：</label>
+            <div class="layui-input-inline">
+                <script type="text/html" template>
+                    <input type="number" name="sorting" value="{{ d.params.sorting || '' }}" lay-verify="required"
+                        placeholder="请输入次序" autocomplete="off" class="layui-input">
+                </script>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">描述:</label>
+            <div class="layui-input-block">
+                <script type="text/html" template>
+                    <textarea name="description" id="description" placeholder="请输入描述"
+                        class="layui-textarea">{{ d.params.description || '' }}</textarea>
+                </script>
+            </div>
+        </div>
+
+        <!--按钮提交-->
+        <div class="layui-form-item">
+            <label class="layui-form-label"></label>
+            <input type="button" lay-submit lay-filter="form-submit-authCode" value="确认" class="layui-btn"
+                style="float:right;margin-right: 10px;">
+        </div>
+    </div>
+
+</div>
+<script type="text/html" template lay-done="layui.data.sendParams(d.params)">
+</script>
+
+
+<script type="text/javascript">
+    layui.data.sendParams = function (params) {
+        layui.use(['iconPicker', 'global'], function () {
+            var $ = layui.$,
+                iconpicker = layui.iconPicker,
+                global = layui.global;
+
+            //***初始化***
+            global.pickDic_mul({
+                isVisible: '显示隐藏'
+                
+            }); //字典字段初始化
+            global.set_dicField_mul({
+                isVisible: params.isVisible
+                
+            }); //字典字段赋初值
+
+            iconpicker.render({
+                // 选择器，推荐使用input
+                elem: '#iconPicker',
+                // 数据类型：fontClass/unicode，推荐使用fontClass
+                type: 'fontClass',
+                // 是否开启搜索：true/false
+                search: true,
+                // 点击回调
+                click: function (data) {
+                    $('#icon').val(data.icon);
+                }
+            });
+
+            setTimeout(function () {
+                test();
+            }, 100);
+
+            function test() {
+
+                var icon = $('#icon').val();
+                iconpicker.checkIcon('iconPicker', icon);
+            }
+
+
+        })
+    }
+</script>

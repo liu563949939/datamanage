@@ -1,0 +1,138 @@
+<title></title>
+
+<div class="layui-card layadmin-header">
+    <div class="layui-breadcrumb" lay-filter="breadcrumb">
+        <a lay-href="">主页</a>
+        <a><cite>应用管理</cite></a>
+        <a><cite>开发者管理</cite></a>
+    </div>
+</div>
+
+<div class="layui-fluid">
+    <div class="layui-card">
+        <div class="layui-form layui-card-header layuiadmin-card-header-auto" lay-filter="query-developer">
+            <div class="layui-form-item" id="query-developer">
+            </div>
+        </div>
+        <div class="layui-card-body">
+            <table class="layui-hide" id="table-developer" lay-filter="table-developer"></table>
+        </div>
+    </div>
+</div>
+
+<script>
+    layui.use(['table', 'tablex', 'layer', 'form', 'jutil', 'userauthen'], function () {
+        var table = layui.table,
+            layer = layui.layer,
+            form = layui.form,
+            jutil = layui.jutil,
+            config = layui.userauthen;
+
+        //******变量定义******   
+        var tablex = new layui.tablex();
+
+        var active = {
+            //1.表格加载
+            tableRender: function () {
+                //查询区域
+                var querybar = tablex.querybar;
+                querybar.text("姓名", "name");
+                querybar.text("地址", "address");
+                querybar.button("btnQuery", "查询", "&#xe615;", "query");
+                querybar.button("btnClear", "重置", "&#xe669;", "clear");
+
+                //工具栏
+                var toolbar = tablex.toolbar;
+                toolbar.add("新增", "add");
+
+                //操作列
+                var actionbar = tablex.actionbar;
+                actionbar.add("编辑", "edit");
+                actionbar.add("删除", "del", "layui-btn-danger");
+
+                //数据列
+                var col = tablex.column;
+
+                col.querybar("query-developer", querybar.cols); //输出查询区域
+                col.toolbar(toolbar.cols); //输出工具栏
+
+                col.number();
+                col.hide('ID', "id");
+                col.text("姓名", "name");
+                col.text("地址", "address");
+                col.text("邮箱", "email");
+                col.text("手机", "phone");
+                col.actionbar("操作", actionbar.cols); //输出操作列
+
+                //表格输出
+                $('#table-developer').table({
+                    url: config.url + 'developer/query',
+                    method: "post",
+                    toolbar: col.tools,
+                    height: 'full-250',
+                    cols: col.cols
+                });
+            },
+
+            //2.弹出层
+            post: function (data) {
+                tablex.post("developer", "userauthen/appMenu/developer/view", "form-submit-developer", {
+                    width: '760px',
+                    height: '470px',
+                    title: "开发者信息"
+                }, config.url + "developer/", data, function (index, json) {
+                    debugger
+                    table.reload("table-developer");
+                    layer.close(index);
+                });
+            }
+        }
+
+        //******初始化******
+        active.tableRender();
+
+
+        //******事件监听******
+        //1. 监听查询按钮
+        form.on('submit(query)', function (data) {
+
+            table.reload("table-developer", {
+                where: jutil.json(data.field)
+            });
+            return false; //阻止表单跳转。
+
+        });
+
+        //2. 监听重置按钮
+        form.on('submit(clear)', function (data) {
+            form.val("query-developer", jutil.empty(data.field));
+            table.reload("table-developer", {
+                where: null
+            });
+            return false;
+        });
+
+        //3.工具栏事件新增
+        table.on('toolbar(table-developer)', function (obj) {
+            var checkStatus = table.checkStatus(obj.config.id);
+            if (obj.event == "add") {
+                active.post();
+            }
+        });
+
+        //4. 操作列按钮事件监听：应该监听表格的lay-filter
+        //修改或删除
+        table.on('tool(table-developer)', function (obj) {
+            var event = obj.event;
+            var data = obj.data;
+            if (obj.event === 'del') {
+                tablex.delete(config.url + "developer/" + data.id, function (json) {
+                    table.reload("table-developer");
+                });
+            } else if (obj.event === 'edit') {
+                active.post(data);
+            }
+        });
+
+    });
+</script>

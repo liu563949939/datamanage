@@ -1,0 +1,160 @@
+<div class="layui-form" lay-filter="root-form-list">
+    <!--ID(隐藏)-->
+    <div class="layui-form-item">
+        <div class="layui-input-inline">
+            <script type="text/html" template>
+                <input type="hidden" name="id" value="{{ d.params.id || '' }}" placeholder="ID" autocomplete="off"
+                    class="layui-input">
+            </script>
+        </div>
+    </div>
+
+    <!--登录名-->
+    <div class="layui-form-item">
+        <label class="layui-form-label"><span style="color: red; ">*</span>登录名：</label>
+        <div class="layui-input-inline">
+            <script type="text/html" template>
+                <input type="text" name="loginName" value="{{ d.params.loginName || '' }}" lay-verify="required"
+                    placeholder="请输入登录名" autocomplete="off" class="layui-input">
+            </script>
+        </div>
+        <label class="layui-form-label"><span style="color: red; ">*</span>姓名：</label>
+        <div class="layui-input-inline">
+            <script type="text/html" template>
+                <input type="text" name="name" value="{{ d.params.name || '' }}" lay-verify="required"
+                    placeholder="请输入姓名" autocomplete="off" class="layui-input">
+            </script>
+        </div>
+    </div>
+
+
+    <!--登录密码-->
+    <div class="layui-form-item">
+        <label class="layui-form-label"><span style="color: red; ">*</span>登录密码：</label>
+        <div class="layui-input-inline">
+            <script type="text/html" template>
+                <input type="password" name="password" value="{{ d.params.password || '' }}" id="pwd"
+                    lay-verify="required" placeholder="请输入登录密码" autocomplete="off" class="layui-input">
+            </script>
+        </div>
+        <label class="layui-form-label"><span style="color: red; ">*</span>确认密码：</label>
+        <div class="layui-input-inline">
+            <script type="text/html" template>
+                <input type="password" name="password" id="regPwd" lay-verify="regPwd"
+                    value="{{ d.params.password || '' }}" placeholder="请确认密码" autocomplete="off" class="layui-input">
+            </script>
+        </div>
+    </div>
+
+    <!--开发者类型-->
+    <div class="layui-form-item">
+        <label class="layui-form-label">开发者类型</label>
+        <div class="layui-input-inline">
+            <select name="type" id="type">
+            </select>
+        </div>
+        <label class="layui-form-label">地址：</label>
+        <div class="layui-input-inline">
+            <script type="text/html" template>
+                <input type="text" name="address" value="{{ d.params.address || '' }}" placeholder="请输入地址"
+                    autocomplete="off" class="layui-input">
+            </script>
+        </div>
+    </div>
+
+
+    <!--邮箱和电话-->
+    <div class="layui-form-item">
+        <label class="layui-form-label">邮箱：</label>
+        <div class="layui-input-inline">
+            <script type="text/html" template>
+                <input type="text" name="email" value="{{ d.params.email || '' }}" placeholder="请输入邮箱"
+                    autocomplete="off" class="layui-input">
+            </script>
+        </div>
+        <label class="layui-form-label">电话：</label>
+        <div class="layui-input-inline">
+            <script type="text/html" template>
+                <input type="text" name="phone" value="{{ d.params.phone || '' }}" placeholder="请输入电话"
+                    autocomplete="off" class="layui-input">
+            </script>
+        </div>
+    </div>
+
+    <!--手机和QQ-->
+    <div class="layui-form-item">
+        <label class="layui-form-label">手机：</label>
+        <div class="layui-input-inline">
+            <script type="text/html" template>
+                <input type="text" name="mobile" value="{{ d.params.mobile || '' }}" placeholder="请输入手机"
+                    autocomplete="off" class="layui-input">
+            </script>
+        </div>
+        <label class="layui-form-label">QQ：</label>
+        <div class="layui-input-inline">
+            <script type="text/html" template>
+                <input type="text" name="qq" value="{{ d.params.qq || '' }}" placeholder="请输入QQ" autocomplete="off"
+                    class="layui-input">
+            </script>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">身份照片：</label>
+        <div class="layui-input-inline">
+            <script type="text/html" template>
+                <input type="text" name="photo" id="photo" value="{{ d.params.photo || '' }}" disabled="true"
+                    autocomplete="off" class="layui-input">
+            </script>
+        </div>
+        <button type="button" class="layui-btn layui-btn-sm layui-btn-danger" id="uploadButton">
+            <i class="layui-icon">&#xe67c;</i>照片上传
+        </button>
+    </div>
+    <!--按钮提交-->
+    <div class="layui-form-item" style="text-align:center;padding:10px;">
+        <input type="button" lay-submit lay-filter="form-submit-developer" value="确认" class="layui-btn">
+    </div>
+</div>
+<script type="text/html" template lay-done="layui.data.sendParams(d.params)">
+</script>
+
+
+<script>
+    layui.data.sendParams = function (params) {
+        layui.use(['form', 'jquery', 'global'], function () {
+            var $ = layui.jquery,
+                form = layui.form,
+                global = layui.global;
+
+            form.verify({
+                regPwd: function (value) {
+                    //获取密码
+                    var pwd = $("#pwd").val();
+                    if (!new RegExp(pwd).test(value)) {
+                        return '两次输入的密码不一致';
+                    }
+                }
+            });
+            
+            //***方法定义***
+            var active = {
+                //1.照片上传
+                fileUpload: function () {
+                    var param = {};
+                    param.elem = "#uploadButton";
+                    param.input = "#photo";
+                    global.fileUpload(param);
+                }
+            }
+
+            //***初始化***
+            global.pickDic_mul({
+                type: '开发者类型'
+            }); //字典字段初始化
+            global.set_dicField_mul({
+                type: params.type
+            }); //字典字段赋初值
+            active.fileUpload();
+        });
+    }
+</script>

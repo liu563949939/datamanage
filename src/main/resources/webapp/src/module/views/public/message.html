@@ -1,0 +1,124 @@
+<div>
+  <div class="layui-fluid">
+    <div class="layui-card">
+      <div class="layui-form layui-card-header layuiadmin-card-header-auto" lay-filter="query-message">
+        <div class="layui-form-item" id="query-message">
+        </div>
+      </div>
+      <div class="layui-card-body">
+        <table class="layui-hide" id="table_message" lay-filter="table_message"></table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!--头部工具栏-->
+<script type="text/html" id="toolbarMessage">
+  <div class="layui-btn-container">
+    <button class="layui-btn layui-btn-sm" lay-event="getCheckData">获取选中行数据</button>
+    <button class="layui-btn layui-btn-sm" lay-event="getCheckLength">获取选中数目</button>
+    <button class="layui-btn layui-btn-sm" lay-event="isAll">验证是否全选</button>
+  </div>
+</script>
+
+<!--行工具栏-->
+<script type="text/html" id="barMessage">
+  <a class="layui-btn layui-btn-xs" lay-event="deal">处理</a>
+  <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
+</script>
+
+<script>
+  layui.use(['form', 'userauthen', 'table', 'jutil', 'global'], function () {
+    var table = layui.table,
+      config = layui.userauthen,
+      global = layui.global;
+
+    //***变量定义***
+    var tablex = new layui.tablex();
+    
+
+    //***方法定义***
+    var active = {
+      //1.表格渲染
+      tableRender: function () {
+        table.render({
+          elem: '#table_message',
+          url: config.url + 'message/query',
+          method: 'post',
+          rest: true, //走分页模式
+          contentType: 'application/json', //发送到服务器端格式(json)
+          //toolbar: '#toolbarMessage', //头工具栏
+          title: '消息信息',
+          page: true, //开启分页
+          cols: [[
+            { type: 'checkbox', fixed: 'left' },
+            { field: 'id', title: 'ID', sort: true, hide: true },
+            { field: 'type', title: '消息类型', align: 'center' },
+            { field: 'title', title: '消息标题', align: 'center' },
+            { field: 'sendName', title: '发送人', align: 'center' },
+            { field: 'sendTime', title: '发送时间', align: 'center' },
+            { field: 'content', title: '消息内容', align: 'center' },
+            { fixed: 'right', title: '操作', align: 'center', toolbar: '#barMessage' }
+          ]],
+          //分页重命名
+          request: {
+            pageName: 'index', //页码的参数名称，默认：page
+            limitName: 'page' //每页数据量的参数名，默认：limit
+          },
+          //数据格式转换
+          parseData: function (res) { //res 即为原始返回的数据
+            return {
+              "code": res.code == "1" ? 0 : 1, //解析接口状态
+              "msg": res.message, //解析提示文本
+              "count": res.count, //解析数据长度
+              "data": res.data //解析数据列表
+            };
+          }
+        });
+      },
+
+      //2.表格重载
+      tableReload: function () {
+        table.reload('table_message', {
+          where: {},
+          page: {
+            curr: 1
+          }
+        });
+      },
+
+      //3.查询区域展示
+      queryDisp: function(){
+        var querybar = tablex.querybar;
+        querybar.text("名称", "name");
+        querybar.button("btnQuery", "查询", "&#xe615;", "query");
+        querybar.button("btnClear", "重置", "&#xe669;", "clear");
+      }
+
+    }
+
+    //***初始化***
+    active.tableRender();
+
+
+
+    //***事件监听***
+    table.on('tool(table_message)', function (obj) {
+      var data = obj.data;
+      if (obj.event == 'deal') {
+        var param = {};
+        param.style = { title: '业务处理', width: '600px', height: '420px' };
+        param.id = 'deal';
+        param.path = data.content;
+        param.data = data;
+        global.pickInfo(param);
+
+      } else if (obj.event == 'del') {
+        global.commonDelNew(config.url + "message/" + data.id, function (json) {
+          active.tableReload();
+        });
+      }
+    })
+
+  })
+</script>

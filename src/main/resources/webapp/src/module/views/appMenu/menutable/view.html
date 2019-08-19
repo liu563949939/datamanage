@@ -1,0 +1,176 @@
+<div class="layui-form" lay-filter="root-form-list">
+    <!--ID(隐藏)-->
+    <div class="layui-form-item">
+        <div class="layui-input-inline">
+            <script type="text/html" template>
+                <input type="hidden" name="id" value="{{ d.params.id || '' }}" placeholder="ID" autocomplete="off"
+                    class="layui-input">
+            </script>
+        </div>
+        <div class="layui-input-inline">
+            <script type="text/html" template>
+                <input type="hidden" name="status" value="{{ d.params.status || '0' }}" autocomplete="off"
+                    class="layui-input">
+            </script>
+        </div>
+    </div>
+
+    <!--名称-->
+    <div class="layui-form-item">
+        <label class="layui-form-label"><span style="color: red; ">*</span>名称：</label>
+        <div class="layui-input-inline">
+            <script type="text/html" template>
+                <input type="text" name="name" value="{{ d.params.name || '' }}" lay-verify="required"
+                    placeholder="请输入名称" autocomplete="off" class="layui-input">
+            </script>
+        </div>
+    </div>
+
+    <!--数据表名-->
+    <div class="layui-form-item">
+        <label class="layui-form-label"><span style="color: red; ">*</span>数据表名：</label>
+        <div class="layui-input-inline">
+            <script type="text/html" template>
+                <input type="text" name="tableName" value="{{ d.params.tableName || '' }}" lay-verify="required"
+                    placeholder="请输入数据表名" autocomplete="off" class="layui-input">
+            </script>
+        </div>
+    </div>
+
+    <!--所属站点-->
+    <div class="layui-form-item">
+        <label class="layui-form-label"><span style="color: red; ">*</span>所属站点：</label>
+        <div class="layui-input-inline">
+            <script type="text/html" template>
+                <input type="text" name="appName" id="appName" disabled=true value="{{ d.params.appName || '' }}"
+                    lay-verify="required" placeholder="请选择所属站点" autocomplete="off" class="layui-input">
+                <input type="hidden" name="appId" id="appId" value="{{ d.params.appId || '' }}" placeholder="appId"
+                    autocomplete="off" class="layui-input">
+            </script>
+        </div>
+
+        <button type="button" class="layui-btn layui-btn-normal layui-btn-sm" style="margin-top: 4px;"
+            id="appIdbtn">选择</button>
+    </div>
+
+    <!--权限控制-->
+    <div class="layui-form-item">
+        <label class="layui-form-label">权限控制：</label>
+        <div class="layui-input-inline">
+            <select name="isPhantom" id="isPhantom">
+            </select>
+        </div>
+    </div>
+
+    <!--显示情况-->
+    <div class="layui-form-item">
+        <label class="layui-form-label">显示情况：</label>
+        <div class="layui-input-inline">
+                <select name="isVisible" id="isVisible">
+                    </select>
+        </div>
+    </div>
+
+    <!--次序-->
+    <div class="layui-form-item">
+        <label class="layui-form-label"><span style="color: red; ">*</span>次序：</label>
+        <div class="layui-input-inline">
+            <script type="text/html" template>
+                <input type="number" name="sorting" value="{{ d.params.sorting || '' }}" lay-verify="required"
+                    placeholder="请输入次序" autocomplete="off" class="layui-input">
+            </script>
+        </div>
+    </div>
+
+    <!--按钮提交-->
+    <div class="layui-form-item" style="text-align:center;padding:10px;">
+        <input type="button" lay-submit lay-filter="form-submit-menutable" value="确认" class="layui-btn">
+    </div>
+</div>
+<script type="text/html" template lay-done="layui.data.sendParams(d.params)">
+</script>
+
+
+
+
+
+<script>
+    layui.data.sendParams = function (params) {
+        layui.use(['table', 'tablex', 'layer', 'form', 'jutil', 'userauthen', 'dtree', 'global'], function () {
+            var table = layui.table,
+                layer = layui.layer,
+                form = layui.form,
+                jutil = layui.jutil,
+                config = layui.userauthen,
+                dtree = layui.dtree,
+                global = layui.global;
+            var tablex = new layui.tablex();
+
+            //***初始化***
+            debugger
+            global.pickDic_mul({
+                isPhantom: '是否',
+                isVisible:'显示隐藏'
+            }); //字典字段初始化
+            global.set_dicField_mul({
+                isPhantom: params.isPhantom,
+                isVisible: params.isVisible
+            }); //字典字段赋初值
+
+
+
+            //获取dtree待展示数据
+            var param = {};
+            param.url = 'appInfo/query'; //查询接口
+            param.condition = {}; //查询条件(后台映射为实体)
+            var data = global.getTreeData(param) //数据返回
+
+            $("#appIdbtn").click(function () {
+
+                layer.open({
+                    type: 1,
+                    //type:0 也行
+                    title: "站点信息树",
+                    area: ["400px", "80%"],
+                    content: '<ul id="openTree1" class="dtree" data-id="0"></ul>',
+                    btn: ['确认选择'],
+                    success: function (layero, index) {
+                        debugger
+                        //dtree数据展示
+                        var param = {};
+                        param.elem = 'openTree1';
+                        param.data = data;
+                        param.display = {
+                            title: 'name',
+                            treeId: 'id',
+                            parentId: 'parentid'
+                        }
+                        global.dtreeRender(param);
+
+
+                        // 绑定节点的双击
+                        dtree.on("nodedblclick('openTree1')", function (obj) {
+                            if (obj.param.context != '站点信息') {
+                                $("#appName").val(obj.param.context);
+                                $("#appId").val(obj.param.nodeId);
+                                layer.close(index);
+                            }
+
+
+
+                        });
+                    },
+                    yes: function (index, layero) {
+                        var param = dtree.getNowParam("openTree1"); // 获取当前选中节点
+                        if (param.context != '站点信息') {
+                            debugger
+                            $("#appName").val(param.context);
+                            $("#appId").val(param.nodeId);
+                            layer.close(index);
+                        }
+                    }
+                });
+            });
+        });
+    }
+</script>

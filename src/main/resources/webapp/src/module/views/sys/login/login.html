@@ -1,0 +1,133 @@
+<script type="text/html" template>
+    <link rel="stylesheet" href="themes/default/css/login.css?v={{ layui.admin.v }}-1" media="all">
+</script>
+
+<div id="large-header" class="layadmin-user-login layadmin-user-display-show" id="LAY-user-login"
+    style="display: none;">
+    <div class="layadmin-user-login-main">
+        <div class="layadmin-user-login-box layadmin-user-login-header">
+            <script type="text/html" template>
+                <h2>
+                    {{layui.setter.name}}
+                </h2>
+            </script>
+        </div>
+        <div class="layadmin-user-login-box layadmin-user-login-body layui-form">
+            <div class="layui-form-item">
+                <label class="layadmin-user-login-icon layui-icon layui-icon-username"
+                    for="LAY-user-login-username"></label>
+                <input type="text" name="username" id="LAY-user-login-username" lay-verify="required" placeholder="用户名"
+                    class="layui-input">
+            </div>
+            <div class="layui-form-item">
+                <label class="layadmin-user-login-icon layui-icon layui-icon-password"
+                    for="LAY-user-login-password"></label>
+                <input type="password" name="password" id="LAY-user-login-password" lay-verify="required"
+                    placeholder="密码" class="layui-input">
+            </div>
+            <div class="layui-form-item">
+                <button class="layui-btn layui-btn-fluid" lay-submit lay-filter="LAY-user-login-submit">登 录</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="layui-trans layadmin-user-login-footer">
+        <script type="text/html" template>
+            <p>© Copyright 2016 - 2019 <a href="{{layui.setter.website}}" target="_blank">{{layui.setter.copyright}}</a> . All Rights Reserved</p>
+        </script>
+    </div>
+</div>
+
+
+<script>
+    debugger
+    alert('333')
+    layui.use(['admin', 'setter', 'form', 'user', 'jutil', 'Q', 'userauthen'], function () {
+        var $ = layui.$,
+            setter = layui.setter,
+            admin = layui.admin,
+            form = layui.form,
+            router = layui.router(),
+            config = layui.userauthen,
+            Q = layui.Q,
+            search = router.search;
+        alert('222')
+        //界面高度自适应
+        var iHeight = document.documentElement.clientHeight; //获得屏幕高度
+        $('#large-header').css("height", iHeight);
+
+        form.render();
+
+        //提交
+        form.on('submit(LAY-user-login-submit)', function (obj) {
+            var data = layui.jutil.json(obj.field);
+            Q.post(config.url + 'login/', JSON.stringify(data), function (json) {
+                if (json.code == "10000") {
+                    //***token信息***
+                    //token写值
+                    layui.sessionData(setter.tableName, {
+                        key: setter.request.tokenName,
+                        value: json.data.token
+                    });
+
+
+                    //***用户单位***
+                    //单位代码
+                    layui.sessionData(setter.tableName, {
+                        key: "unit",
+                        value: json.data.area
+                    })
+
+                    //单位名称
+                    layui.sessionData(setter.tableName, {
+                        key: "unitName",
+                        value: json.data.areaName
+                    })
+
+                    //用户ID
+                    layui.sessionData(setter.tableName, {
+                        key: "userId",
+                        value: json.data.userId
+                    });
+
+                    //用户姓名
+                    layui.sessionData(setter.tableName, {
+                        key: "name",
+                        value: json.data.name
+                    });
+
+                    //***读配置文件***
+                    //url写值
+                    layui.sessionData(setter.tableName, {
+                        key: "url",
+                        value: config.url
+                    })
+
+                    //appId写值
+                    layui.sessionData(setter.tableName, {
+                        key: "appId",
+                        value: config.appId
+                    })
+
+                    //登入成功的提示与跳转
+                    layer.msg('登入成功', {
+                        offset: '15px',
+                        icon: 1,
+                        time: 1000
+                    }, function () {
+                        debugger
+                        //location.hash = search.redirect ? decodeURIComponent(search.redirect) : '/';
+                        location.hash = '#/';
+                    });
+                } else {
+                    layer.msg(json.message, {
+                        offset: '250px',
+                        icon: 7,
+                        time: 3000
+                    });
+                }
+
+            });
+        });
+    });
+</script>

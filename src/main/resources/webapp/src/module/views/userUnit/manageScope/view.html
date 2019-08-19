@@ -1,0 +1,144 @@
+
+<div>
+    <div class="layui-card">
+        <table class="layui-hide" id="table-app" lay-filter="table-app"></table>
+    </div>
+</div>
+
+
+
+
+<script>
+    layui.use(['table', 'tablex', 'layer', 'form', 'jutil', 'userauthen', 'admin', 'view', 'global', 'dictpl','Q'], function () {
+        var table = layui.table,
+            layer = layui.layer,
+            form = layui.form,
+            jutil = layui.jutil,
+            config = layui.userauthen,
+            admin = layui.admin,
+            view = layui.view,
+            global = layui.global,
+            dictpl = layui.dictpl,
+            Q = layui.Q;
+
+
+        //******变量定义******
+        var userId = layui.userId;
+        
+        var tablex_app = new layui.tablex(), //应用信息
+            condition = {type: 'manageScope',field1: userId};//查询条件(关联用户id)
+
+
+        //******方法定义******
+        var active = {
+            //1.表格加载
+            appTableRender: function () {
+                //头工具栏
+                var toolbar = tablex_app.toolbar;
+                toolbar.add("新增", "add");
+
+                //行工具栏
+                var actionbar = tablex_app.actionbar;
+                actionbar.add("删除", "del", "layui-btn-danger");
+
+                //数据列
+                var col = tablex_app.column;
+
+                col.toolbar(toolbar.cols); //输出头工具栏
+
+                col.number();
+                col.hide('ID', "id");
+                col.text("应用名称", "name");
+                col.actionbar("操作", actionbar.cols,'15%'); //输出行工具栏
+
+                //表格输出
+                $('#table-app').table({
+                    url: config.url + 'publicQuery/query',
+                    method: "post",
+                    toolbar: col.tools,
+                    height: 'full-250',
+                    cols: col.cols,
+                    where: condition
+                });
+            },
+
+            //2.表格重载
+            appTableReload: function (data) {
+                table.reload("table-app", {
+                    where: jutil.json(condition),
+                    page: {
+                        curr: 1
+                    }
+                });
+            },
+
+            //3.弹出层(应用选择)
+            pickApp: function () {
+                var param = {};
+                param.style = {
+                    title: '应用提取',
+                    width: '600px',
+                    height: '600px'
+                }
+                param.id = 'pickApp';
+                param.path = 'userAuthen/public/pick_app';
+                param.callback = function (data, index) { //回调函数(关闭页面)
+                    if(data instanceof Array) {  //多选
+                        for(var i=0;i<data.length;i++){
+                            //(1)插入关联信息
+                            var param = {};
+                            param.url = 'manageScope';
+                            param.method = 'POST';
+                            param.entity = {
+                                userId: userId,
+                                appId: data[i].id
+                            };
+                            param.callback = function () {
+                                layer.close(index) //弹层关闭
+                                active.appTableReload(); //刷新表格
+                            }
+                            global.commonAdd(param);
+                        }
+                    } else {    
+                        var param = {};
+                        param.url = 'manageScope';
+                        param.method = 'POST';
+                        param.entity = {
+                            userId: userId,
+                            appId: data.id
+                        };
+                        param.callback = function () {
+                            layer.close(index) //弹层关闭
+                            active.appTableReload(); //刷新表格
+                        }
+                        global.commonAdd(param);
+                    }
+                }
+                global.pickInfo(param); //弹出窗体
+            }
+
+        }
+
+
+        //******初始化******  
+        active.appTableRender(); 
+
+        //******事件监听******
+
+        //1.监听头工具栏(新增)
+        table.on('toolbar(table-app)', function (obj) {
+            if (obj.event == 'add') {
+                active.pickApp();
+            }
+        })
+
+        //2.监听行工具栏(删除)
+        table.on('tool(table-app)', function (obj) {
+            if (obj.event == 'del') {
+                tablex_app.delete(config.url + "manageScope/" + obj.data.id, function (json) {
+                    active.appTableReload(condition);
+                })
+            }
+        })
+    });
+</script>

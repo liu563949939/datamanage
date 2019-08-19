@@ -1,0 +1,163 @@
+<title>设置我的资料</title>
+
+<div class="layui-card layadmin-header">
+    <div class="layui-breadcrumb" lay-filter="breadcrumb">
+        <a lay-href="">主页</a>
+        <a><cite>设置</cite></a>
+        <a><cite>我的资料</cite></a>
+    </div>
+</div>
+
+<div class="layui-fluid">
+    <div class="layui-row layui-col-space15">
+        <div class="layui-col-md12">
+            <div class="layui-card">
+                <div class="layui-card-header">设置用户信息</div>
+                <div class="layui-card-body" pad15>
+                    <div class="layui-form" lay-filter="form-userInfo">
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">用户名</label>
+                            <div class="layui-input-inline">
+                                <input type="text" id="userName" name="userName" readonly class="layui-input">
+                            </div>
+                        </div>
+
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">姓名</label>
+                            <div class="layui-input-inline">
+                                <input type="text" id="name" name="name" lay-verify="nickname" autocomplete="off"
+                                    placeholder="请输入姓名" class="layui-input">
+                            </div>
+                        </div>
+
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">昵称</label>
+                            <div class="layui-input-inline">
+                                <input type="text" id="nickName" name="nickName" lay-verify="nickname" autocomplete="off"
+                                    placeholder="请输入昵称" class="layui-input">
+                            </div>
+                        </div>
+
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">性别</label>
+                            <div class="layui-input-block">
+                                <input type="radio" name="sex" value="1" title="男">
+                                <input type="radio" name="sex" value="2" title="女">
+                            </div>
+                        </div>
+
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">手机</label>
+                            <div class="layui-input-inline">
+                                <input type="text" id="phone" name="phone" lay-verify="phone" autocomplete="off"
+                                    class="layui-input">
+                            </div>
+                        </div>
+
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">邮箱</label>
+                            <div class="layui-input-inline">
+                                <input type="text" id="email" name="email" lay-verify="email" autocomplete="off" class="layui-input">
+                            </div>
+                        </div>
+
+                        <div class="layui-form-item">
+                            <div class="layui-input-block">
+                                <button class="layui-btn" lay-submit lay-filter="setmyinfo">确认修改</button>
+                                <button type="reset" class="layui-btn layui-btn-primary">重新填写</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    //1.从token中取得userId
+    //2.通过接口取得用户信息并赋值表单
+    //3.获取表单信息提交更新
+    layui.use(['form','setter','userauthen','global','jutil','layer'],function(){
+        var $ = layui.$,
+            setter = layui.setter,
+            config = layui.userauthen,
+            global = layui.global,
+            jutil = layui.jutil,
+            layer = layui.layer;
+
+
+        //***变量定义***
+        var userId = layui.sessionData(setter.tableName).userId;
+        var userInfo = {};
+
+        //***方法定义***
+        var active = {
+            //1.获得用户信息
+            getUserInfo: function () {
+                userInfo = {};
+                var param = {};
+                param.url = 'user/query';
+                param.condition = {id: userId};
+                userInfo = global.commonQuery(param)[0]; //用户信息
+                if(userInfo != null || userInfo != undefined){
+                    active.eleSetValue(userInfo);
+                }
+            },
+
+            //2.form表单内元素set
+            eleSetValue: function (data) {
+                debugger;
+                $('#userName').val(data.userName);
+                $('#name').val(data.name);
+                $('#nickName').val(data.nickName);
+                //$("#radio1").attr("checked","checked");
+                $('#phone').val(data.phone);
+                $('#email').val(data.email);
+            },
+
+            //3.form表单内元素get
+            eleGetValue: function (data) {
+                debugger
+                userInfo.userName = data.userName;
+                userInfo.name = data.name;
+                userInfo.nickName = data.nickName;
+                userInfo.sex = data.sex;
+                userInfo.phone = data.phone;
+                userInfo.email = data.email;
+            },
+
+            //4.提交更新
+            updateUserInfo: function(data) {
+                if(userInfo != null && userInfo != undefined){
+                    active.eleGetValue(data);
+                    //请求参数
+                    var param = {};
+                    param.url = 'user';
+                    param.method = 'patch';
+                    param.entity = userInfo;
+                    param.callback = active.hint;
+                    global.commonAdd(param);
+                }
+            },
+
+            //5.保存成功提示
+            hint: function () {
+                layer.msg('修改成功！',{
+                    icon: 1,
+                    time: 2000
+                })
+            }
+        }
+
+        //***初始化***
+        form.render(null,'form-userInfo')
+        active.getUserInfo();
+
+        //***事件监听***
+        form.on('submit(setmyinfo)',function(data){
+            active.updateUserInfo(data.field);
+        })
+
+    })
+</script>

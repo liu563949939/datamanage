@@ -1,0 +1,304 @@
+<div class="layui-form" lay-filter="sub-form-list">
+  <!--ID(隐藏),节点名称-->
+  <div class="layui-form-item">
+    <div class="layui-input-inline">
+      <script type="text/html" template>
+        <input type="hidden" name="id" value="{{ d.params.id || '' }}" placeholder="ID" autocomplete="off"
+          class="layui-input">
+      </script>
+    </div>
+    <div class="layui-input-inline">
+      <script type="text/html" template>
+        <input type="hidden" name="appId" value="{{ d.params.appId || '' }}" autocomplete="off" class="layui-input">
+      </script>
+    </div>
+    <label class="layui-form-label"><span style="color: red; ">*</span>节点名称：</label>
+    <div class="layui-input-inline">
+      <script type="text/html" template>
+        <input type="text" name="name" value="{{ d.params.name || '' }}" lay-verify="required" placeholder="请输入节点名称"
+          autocomplete="off" class="layui-input">
+      </script>
+    </div>
+  </div>
+
+  <!--节点类型，加载模式-->
+  <div class="layui-form-item">
+    <label class="layui-form-label">节点类型：</label>
+    <div class="layui-input-inline">
+        <select name="type" id="type">
+          </select>
+     
+    </div>
+    <label class="layui-form-label">加载模式：</label>
+    <div class="layui-input-inline">
+        <select name="loadMode" id="loadMode">
+          </select>
+     
+    </div>
+  </div>
+
+  <!--节点目录-->
+  <div class="layui-form-item">
+    <label class="layui-form-label"><span style="color: red; ">*</span>节点目录：</label>
+    <div class="layui-input-inline">
+      <script type="text/html" template>
+        <input type="hidden" name="parentId" id="parentId" value="{{ d.params.parentId || '' }}" lay-verify="required"
+          autocomplete="off" class="layui-input">
+        <input type="text" name="parentName" disabled=" true" id="parentName" value="{{ d.params.parentName || '' }}"
+          lay-verify="required" placeholder="请输入节点目录" autocomplete="off" class="layui-input">
+      </script>
+    </div>
+    <button type="button" class="layui-btn layui-btn-normal layui-btn-sm" style="margin-top: 4px;"
+      id="openTree1_btn">选择节点</button>
+  </div>
+
+  <!--菜单面板模式，面板是否收缩-->
+  <div class="layui-form-item">
+    <label class="layui-form-label">面板模式：</label>
+    <div class="layui-input-inline">
+        <select name="panelMode" id="panelMode">
+          </select>
+     
+      
+    </div>
+    <label class="layui-form-label">是否收缩：</label>
+    <div class="layui-input-inline">
+        <select name="panelType" id="panelType">
+          </select>
+      
+    </div>
+
+  </div>
+
+  <!--链接地址-->
+  <div class="layui-form-item">
+    <label class="layui-form-label">链接地址：</label>
+    <div class="layui-input-inline" style="width:450px">
+      <script type="text/html" template>
+        <input type="text" name="url" value="{{ d.params.url || '' }}" placeholder="请输入链接地址" autocomplete="off"
+          class="layui-input">
+      </script>
+    </div>
+  </div>
+
+  <!--代办请求-->
+  <div class="layui-form-item">
+    <label class="layui-form-label">代办请求：</label>
+    <div class="layui-input-inline" style="width:450px">
+      <script type="text/html" template>
+        <input type="text" name="requestUrl" value="{{ d.params.requestUrl || '' }}" placeholder="请输入代办请求"
+          autocomplete="off" class="layui-input">
+      </script>
+    </div>
+  </div>
+
+  <!--图标地址，图标颜色-->
+  <div class="layui-form-item">
+    <label class="layui-form-label">图标地址：</label>
+    <div class="layui-input-inline">
+      <script type="text/html" template>
+        <input type="hidden" id="icon" name="icon" value="{{ d.params.icon || '' }}" class="layui-input">
+      </script>
+      <input type="text" name="iconPicker" id="iconPicker" lay-filter="iconPicker" class="layui-input">
+
+    </div>
+
+    <label class="layui-form-label">图标颜色：</label>
+    <div class="layui-input-inline">
+      <script type="text/html" template>
+        <input type="text" name="color" value="{{ d.params.color || '' }}" placeholder="请输入图标颜色" autocomplete="off"
+          class="layui-input">
+      </script>
+    </div>
+
+  </div>
+
+  <!--是否显示，是否导航页-->
+  <div class="layui-form-item">
+    <label class="layui-form-label">是否显示：</label>
+    <div class="layui-input-inline">
+        <select name="isVisible" id="isVisible1">
+          </select>
+      
+    </div>
+    <label class="layui-form-label">导航页：</label>
+    <div class="layui-input-inline">
+        <select name="isNavigation" id="isNavigation">
+          </select>
+    </div>
+
+  </div>
+
+  <!--菜单编码，窗口大小-->
+  <div class="layui-form-item">
+    <label class="layui-form-label">菜单编码：</label>
+    <div class="layui-input-inline">
+      <script type="text/html" template>
+        <input type="text" name="code" value="{{ d.params.code || '' }}" placeholder="请输入菜单编码" autocomplete="off"
+          class="layui-input">
+      </script>
+    </div>
+    <label class="layui-form-label">窗口大小：</label>
+    <div class="layui-input-inline" style="width:80px">
+      <script type="text/html" template>
+        <input type="number" name="width" value="{{ d.params.width || '' }}" autocomplete="off" class="layui-input">
+      </script>
+
+    </div>
+    <label class="layui-form-label" style="text-align:left;padding:9px 0;width:40px">x</label>
+    <div class="layui-input-inline" style="width:80px">
+      <script type="text/html" template>
+        <input type="number" name="height" value="{{ d.params.height || '' }}" autocomplete="off" class="layui-input">
+      </script>
+
+    </div>
+    <label class="layui-form-label" style="text-align:left;padding:9px 0">px</label>
+  </div>
+
+  <!--显示位置，显示次序-->
+  <div class="layui-form-item">
+    <label class="layui-form-label">显示位置：</label>
+    <div class="layui-input-inline">
+      <script type="text/html" template>
+        <input type="number" name="position" value="{{ d.params.position || '' }}" placeholder="请输入显示位置"
+          autocomplete="off" class="layui-input">
+      </script>
+    </div>
+    <label class="layui-form-label"><span style="color: red; ">*</span>显示次序：</label>
+    <div class="layui-input-inline">
+      <script type="text/html" template>
+        <input type="number" name="sorting" value="{{ d.params.sorting || '' }}" lay-verify="required"
+          placeholder="请输入显示次序" autocomplete="off" class="layui-input">
+      </script>
+    </div>
+  </div>
+
+  <div class="layui-input-inline">
+    <script type="text/html" template>
+      <input type="hidden" name="tableName" value="{{ d.params.tableName || '' }}" autocomplete="off"
+        class="layui-input">
+    </script>
+  </div>
+
+  <!--按钮提交-->
+  <div class="layui-form-item">
+    <input type="button" lay-submit lay-filter="form-submit-menu" value="确认" class="layui-btn"
+      style="float:right;margin-right: 20px;">
+  </div>
+</div>
+<script type="text/html" template lay-done="layui.data.sendParams(d.params)">
+</script>
+
+
+<script>
+  layui.data.sendParams = function (params) {
+    layui.use(['table', 'tablex', 'layer', 'form', 'jutil', 'userauthen', 'dtree', 'global', 'iconPicker'],
+    function () {
+      var table = layui.table,
+        layer = layui.layer,
+        form = layui.form,
+        jutil = layui.jutil,
+        config = layui.userauthen,
+        dtree = layui.dtree,
+        global = layui.global,
+        $ = layui.$,
+        iconpicker = layui.iconPicker;
+
+      var tablex = new layui.tablex();
+      //***初始化***
+      debugger
+            global.pickDic_mul({
+              type: '节点类型',
+              loadMode:'加载模式',
+              panelMode:'面板模式',
+              panelType:'是否',
+              isVisible1:'是否',
+              isNavigation:'是否'
+            }); //字典字段初始化
+            global.set_dicField_mul({
+              type: params.type,
+              loadMode: params.loadMode,
+              panelMode: params.panelMode,
+              panelType: params.panelType,
+              isVisible1: params.isVisible,
+              isNavigation: params.isNavigation
+            }); //字典字段赋初值
+
+
+      //获取dtree待展示数据
+      var param = {};
+      param.url = 'menu/dynamicq'; //查询接口
+      param.condition = {
+        entity: {},
+        "tableName": parent.layui.menutableName
+      }; //查询条件(后台映射为实体)
+      debugger
+      var data = global.getTreeData(param) //数据返回
+
+      $("#openTree1_btn").click(function () {
+        layer.open({
+          type: 1,
+          //type:0 也行
+          title: "菜单节点树",
+          area: ["400px", "80%"],
+          content: '<ul id="openTree1" class="dtree" data-id="0"></ul>',
+          btn: ['确认选择'],
+          success: function (layero, index) {
+            var param = {};
+            param.elem = 'openTree1';
+            param.data = data;
+            param.display = {
+              title: 'name',
+              treeId: 'id',
+              parentId: 'parentId'
+            }
+            global.dtreeRender(param);
+
+
+            // 绑定节点的双击
+            dtree.on("nodedblclick('openTree1')", function (obj) {
+              $("#parentName").val(obj.param.context);
+              $("#parentId").val(obj.param.nodeId);
+              layer.close(index);
+
+            });
+          },
+          yes: function (index, layero) {
+            debugger
+            var param = dtree.getNowParam("openTree1"); // 获取当前选中节点
+
+            $("#parentId").val(param.nodeId);
+            $("#parentName").val(param.context);
+            layer.close(index);
+          }
+        });
+      });
+
+      iconpicker.render({
+        // 选择器，推荐使用input
+        elem: '#iconPicker',
+        // 数据类型：fontClass/unicode，推荐使用fontClass
+        type: 'fontClass',
+        // 是否开启搜索：true/false
+        search: true,
+        // 点击回调
+        click: function (data) {
+          $('#icon').val(data.icon);
+        }
+      });
+
+      setTimeout(function () {
+        test();
+      }, 100);
+
+      function test() {
+
+        var icon = $('#icon').val();
+        iconpicker.checkIcon('iconPicker', icon);
+      }
+
+
+
+    });
+  }
+</script>

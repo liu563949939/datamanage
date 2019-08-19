@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>layout 后台大布局 - Layui</title>
+    <link rel="stylesheet" href="/ui/layui/css/layui.css">
+</head>
+
+<body class="layui-layout-body">
+    <div class="layui-layout layui-layout-admin">
+        <div class="layui-header">
+            <div class="layui-logo">资料管理系统</div>
+            <!-- 头部区域（可配合layui已有的水平导航） -->
+            <ul class="layui-nav layui-layout-left">
+                <li class="layui-nav-item"><a href="">控制台</a></li>
+                <li class="layui-nav-item"><a href="">商品管理</a></li>
+                <li class="layui-nav-item"><a href="">用户</a></li>
+                <li class="layui-nav-item">
+                    <a href="javascript:;">其它系统</a>
+                    <dl class="layui-nav-child">
+                        <dd><a href="">邮件管理</a></dd>
+                        <dd><a href="">消息管理</a></dd>
+                        <dd><a href="">授权管理</a></dd>
+                    </dl>
+                </li>
+            </ul>
+            <ul class="layui-nav layui-layout-right">
+                <li class="layui-nav-item">
+                    <a href="javascript:;">
+                        <img src="http://t.cn/RCzsdCq" class="layui-nav-img">
+                        刘林
+                    </a>
+                    <dl class="layui-nav-child">
+                        <dd><a href="">基本资料</a></dd>
+                        <dd><a href="">安全设置</a></dd>
+                    </dl>
+                </li>
+                <li class="layui-nav-item"><a href="">退了</a></li>
+            </ul>
+        </div>
+
+        <div class="layui-side layui-bg-black">
+            <div class="layui-side-scroll">
+                <!-- 左侧导航区域（可配合layui已有的垂直导航） -->
+                <ul class="layui-nav layui-nav-tree" lay-filter="nav_left">
+                    <li class="layui-nav-item layui-nav-itemed">
+                        <a class="" href="javascript:;">资料体系</a>
+                        <dl class="layui-nav-child">
+                            <dd><a href="javascript:;" data-url="menu1.html" data-id='1' data-text="后台菜单">资料查询</a></dd>
+                            <dd><a href="javascript:;">列表二</a></dd>
+                            <dd><a href="javascript:;">列表三</a></dd>
+                            <dd><a href="">超链接</a></dd>
+                        </dl>
+                    </li>
+                    <li class="layui-nav-item">
+                        <a href="javascript:;">解决方案</a>
+                        <dl class="layui-nav-child">
+                            <dd><a href="javascript:;">列表一</a></dd>
+                            <dd><a href="javascript:;">列表二</a></dd>
+                            <dd><a href="">超链接</a></dd>
+                        </dl>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="layui-body" id = 'body'>
+            <!-- 内容主体区域 -->
+            <!-- <iframe src="./module/views/manage/list.html" width="100%" height="100%" frameborder="0"></iframe> -->
+        </div>
+
+        <div class="layui-footer">
+            <!-- 底部固定区域 -->
+            © 南京公安研究院 - 刘林
+        </div>
+    </div>
+
+
+
+    <script src="/ui/layui/layui.js"></script>
+    <script>
+        //JavaScript代码区域
+        layui.use(['element'], function () {
+            var $ = layui.jquery,
+                element = layui.element;
+
+            //4.事件监听
+            element.on('nav(nav_left)', function (elem) {
+                var text = elem.attr('data-text');
+                if(text == '后台菜单'){
+                    $('#body').empty();
+                    $('#body').append('<iframe src="/module/views/manage/list.html" width="100%" height="99%" frameborder="0"></iframe>');
+                } 
+            });
+
+
+        });
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,177 @@
+<title></title>
+
+<div class="layui-card layadmin-header">
+    <div class="layui-breadcrumb" lay-filter="breadcrumb">
+        <a lay-href="">主页</a>
+        <a><cite>权限管理</cite></a>
+        <a><cite>角色管理</cite></a>
+    </div>
+</div>
+
+<div style="width:20%;float: left;">   
+    <ul id="dtree-appinfo" class="dtree" data-id="0" style="width:90%"></ul>    
+</div>
+<div style="width:80%;float: right">
+    <div class="layui-fluid">
+        <div class="layui-card">
+            <div class="layui-form layui-card-header layuiadmin-card-header-auto" lay-filter="query-role">
+                <div class="layui-form-item" id="query-role">
+                </div>
+            </div>
+            <div class="layui-card-body">
+                <table class="layui-hide" id="table-role" lay-filter="table-role"></table>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script>
+    layui.use(['table', 'tablex', 'layer', 'form', 'jutil', 'userauthen','dtree','global', 'dictpl'], function () {
+        var table = layui.table,
+            layer = layui.layer,
+            form = layui.form,
+            jutil = layui.jutil,
+            config = layui.userauthen,
+            dtree = layui.dtree,
+            global = layui.global,
+            dictpl = layui.dictpl;
+        var tablex = new layui.tablex();
+        
+        //******变量定义******
+        var conditionOrg = {};
+        conditionOrg.symbol = '1';//用于过滤角色树形根目录
+        conditionOrg.appId = '';
+        layui.parentid = ''; //父节点ID
+        //字典模板
+        var dicTransType = dictpl.render({
+            dicName: '角色类型',
+            dicField: 'type'
+        });
+
+        //******方法定义******
+        var active = {
+            //1.树加载
+            dtreeRender: function(){
+                var queryAppInfo = {};
+                queryAppInfo.url = 'appInfo/query'; //查询接口
+                queryAppInfo.condition = {}; //查询条件(后台映射为实体)
+                var dataAppInfo = global.getTreeData(queryAppInfo); //数据返回
+                //dtree数据展示
+                param = {};
+                param.elem = 'dtree-appinfo';
+                param.data = dataAppInfo;
+                param.display = {title:'name',treeId:'id',parentId:'parentid'}
+                global.dtreeRender(param);
+                active.tableRender();
+            },
+            //2.表格加载
+            tableRender: function(){
+                //查询区域
+                var querybar = tablex.querybar;
+                querybar.text("角色名称", "name");
+                querybar.button("btnQuery", "查询", "&#xe615;", "query");
+                querybar.button("btnClear", "重置", "&#xe669;", "clear");
+
+                //工具栏
+                var toolbar = tablex.toolbar;
+                toolbar.add("新增", "add");
+
+                //操作列
+                var actionbar = tablex.actionbar;
+                actionbar.add("编辑", "edit");
+                actionbar.add("删除", "del", "layui-btn-danger");
+
+                //数据列
+                var col = tablex.column;
+
+                col.querybar("query-role", querybar.cols); //输出查询区域
+                col.toolbar(toolbar.cols); //输出工具栏
+
+                col.number();
+                col.hide('ID', "id");
+                col.text("角色名称", "name");
+                col.text("角色类型", "type","", "",dicTransType);
+                col.text("显示情况", "isVisible", "", "",
+                    "<div>{{#  if(d.isVisible === '1'){ }}<i class='layui-icon layui-icon-ok-circle' style='font-size: 20px; color: green;'></i>   {{#  } else { }}<i class='layui-icon layui-icon-close-fill' style='font-size: 20px; color: red;'></i> {{#  } }}</div>");
+                col.text("次序", "sorting");        
+                col.actionbar("操作", actionbar.cols); //输出操作列
+
+                //表格输出
+                $('#table-role').table({
+                    url: config.url + 'role/query',
+                    method: "post",
+                    toolbar: col.tools,
+                    height: 'full-250',
+                    cols: col.cols
+                });
+            },
+            //3.表格重载
+            tableReload: function(data){
+                if(typeof(data)=='undefined'){
+                    data = {}
+                }
+                debugger
+                table.reload("table-role", {
+                    where: jutil.json(data),
+                    page: {
+                        curr: 1
+                    }
+                });
+            },
+            //4.弹出层
+            post: function(data){
+                tablex.post("role", "userauthen/roleAuthority/role/view", "form-submit-role", {
+                    width: '350px',
+                    height: '360px',
+                    title: "角色信息"
+                }, config.url + "role/", data, function (index, json) {
+                    active.tableReload(conditionOrg);
+                    layer.close(index);
+                });
+            }
+        }
+
+        //******初始化******
+        active.dtreeRender();
+
+        //******事件监听******
+        //1.dtree事件监听
+        dtree.on("node('dtree-appinfo')",function(obj){
+            layui.parentid = obj.param.nodeId;
+            conditionOrg.appId = obj.param.nodeId;
+            active.tableReload(conditionOrg); //根据节点数据刷新表格            
+        })
+        //2.查询
+        form.on('submit(query)', function (data) {
+            data.field.appId = layui.parentid;  //加上当前节点的关联ID
+            active.tableReload(data.field);
+            return false;
+        });
+        //3.重置按钮监听
+        form.on('submit(clear)', function (data) {
+            form.val("query-role", jutil.empty(data.field));
+            active.tableReload(data.field);
+            return false;
+        });
+        //4.工具栏监听(新增)
+        table.on('toolbar(table-role)', function (obj) {
+            if (obj.event == "add") {
+                active.post();
+            }
+        });
+        //5.操作列监听(编辑)
+        table.on('tool(table-role)', function (obj) {
+            var event = obj.event;
+            var data = obj.data;
+            if (obj.event === 'del') {
+                tablex.delete(config.url + "role/" + data.id, function (json) {
+                    active.tableReload(conditionOrg);
+                });
+            } else if (obj.event === 'edit') {
+                active.post(data);
+            }
+        });
+
+    });
+</script>

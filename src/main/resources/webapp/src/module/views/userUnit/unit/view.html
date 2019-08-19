@@ -1,0 +1,66 @@
+<div>
+    <div class="layui-form" lay-filter="layuiadmin-app-form-list" style="padding: 20px 30px 0 0;">
+        <!--ID(隐藏)-->
+        <div class="layui-form-item">
+            <div class="layui-input-inline">
+                <script type="text/html" template>
+                    <input type="hidden" name="id" value="{{ d.params.id || '' }}" placeholder="用户ID" autocomplete="off" class="layui-input">
+                </script>
+            </div>
+        </div>
+
+        <!--名称和单位代码-->
+        <div class="layui-form-item">
+            <label class="layui-form-label"><span style="color: red;">*</span>名称</label>
+            <div class="layui-input-inline">
+                <script type="text/html" template>
+                    <input type="text" name="name" value="{{ d.params.name || '' }}" lay-verify="required" placeholder="请输入名称" autocomplete="off" class="layui-input">
+                </script>
+            </div>
+            <label class="layui-form-label"><span style="color: red;">*</span>单位代码</label>
+            <div class="layui-input-inline">
+                <script type="text/html" template>
+                    <input type="text" name="code" value="{{ d.params.code || '' }}" lay-verify="required|number" placeholder="请输入单位代码" autocomplete="off" class="layui-input">
+                </script>
+            </div>
+        </div>
+
+        <!--简称和电话-->
+        <div class="layui-form-item">
+            <label class="layui-form-label">简称</label>
+            <div class="layui-input-inline">
+                <script type="text/html" template>
+                    <input type="text" name="shortName" value="{{ d.params.shortName || '' }}"  placeholder="请输入简称" autocomplete="off" class="layui-input">
+                </script>
+            </div>
+            <label class="layui-form-label">电话</label>
+            <div class="layui-input-inline">
+                <script type="text/html" template>
+                    <input type="text" name="phone" value="{{ d.params.phone || '' }}"  placeholder="请输入电话" autocomplete="off" class="layui-input">
+                </script>
+            </div>
+        </div>
+
+        <!--传真和地址-->
+        <div class="layui-form-item">
+            <label class="layui-form-label">传真</label>
+            <div class="layui-input-inline">
+                <script type="text/html" template>
+                    <input type="text" name="fax" value="{{ d.params.fax || '' }}" placeholder="请输入传真 " autocomplete=”off“ class="layui-input ">
+                </script>
+            </div>
+            <label class="layui-form-label"></span>地址</label>
+            <div class="layui-input-inline">
+                <script type="text/html" template>
+                    <input type="text" name="address" value="{{ d.params.address || '' }}" placeholder="请输入地址" autocomplete="off" class="layui-input">
+                </script>
+            </div>
+        </div>
+
+        <!--按钮提交-->
+        <div class="layui-form-item">
+            <label class="layui-form-label"></label>
+            <input type="button" lay-submit lay-filter="form-submit-unit" value="确认" class="layui-btn" style="float:right;margin-right: 10px; ">
+        </div>
+    </div>
+</div>

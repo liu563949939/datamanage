@@ -1,0 +1,319 @@
+<title></title>
+
+<div class="layui-card layadmin-header">
+    <div class="layui-breadcrumb" lay-filter="breadcrumb">
+        <a lay-href="">主页</a>
+        <a><cite>菜单管理</cite></a>
+        <a><cite>菜单管理</cite></a>
+    </div>
+</div>
+<div style="width:20%;float: left;">
+    <form class="layui-form" style="margin-top:5px;padding:5px;">
+        <select name="menutableName" id="menutableName" lay-filter="menutableName">
+            <option value=""></option>
+        </select>
+    </form>
+    <ul id="menuTree" class="dtree" data-id="0" style="width:90%"></ul>
+</div>
+<div style="width:80%;float: right">
+    <div class="layui-card">
+        <div class="layui-form layui-card-header layuiadmin-card-header-auto" lay-filter="query-menu">
+            <div class="layui-form-item" id="query-menu">
+            </div>
+        </div>
+        <div class="layui-card-body">
+            <table class="layui-hide" id="table-menu" lay-filter="table-menu"></table>
+        </div>
+    </div>
+</div>
+
+<script>
+    layui.use(['table', 'tablex', 'layer', 'form', 'jutil', 'userauthen', 'dtree', 'global', 'dictpl'], function () {
+        var table = layui.table,
+            layer = layui.layer,
+            form = layui.form,
+            jutil = layui.jutil,
+            config = layui.userauthen,
+            dtree = layui.dtree,
+            dictpl = layui.dictpl,
+            global = layui.global;
+
+
+        //******变量定义******
+        var tablex = new layui.tablex();
+        var conditionOrg = {};
+        layui.parentId = ''; //父节点ID
+        debugger
+        layui.menutableName = $('#menutableName').val();
+        //字典模板
+        var dicTransType = dictpl.render({
+            dicName: '节点类型',
+            dicField: 'type'
+        });
+
+        //******方法定义******
+        var active = {
+            // 1. 动态表格select初始化
+            selectMenutableName: function () {
+                var param = {};
+                param.url = 'menutable/query';
+                param.condition = {};
+                var data = global.commonQuery(param);
+                var html = "";
+                var check = "";
+                for (i = 0; i < data.length; i++) {
+                    if (i == 0) {
+                        check = ' selected';
+                    } else {
+                        check = '';
+                    }
+                    html += "<option value='" + data[i].tableName + "' " + check + ">" + data[i].name +
+                        "</option>"
+                }
+                $('#menutableName').html(html);
+                form.render();
+                layui.menutableName = $('#menutableName').val();
+            },
+
+            //2. 动态树tree初始化
+            initTree: function () {
+                //获取dtree待展示数据
+                var param = {};
+                param.url = 'menu/dynamicq'; //查询接口
+                param.condition = {
+                    "entity": {},
+                    "tableName": $('#menutableName').val()
+                }; //查询条件(后台映射为实体)
+                var data = global.getTreeData(param) //数据返回
+                debugger
+                if (data) {
+                    if (conditionOrg && Object.keys(conditionOrg).length === 0) {
+                        active.reloadTree(data, true);
+                    } else {
+                        active.reloadTree(data, false);
+                    }
+                }
+
+            },
+
+            // 3. 重加载tree
+            reloadTree: function (data, flag) {
+                debugger
+                //dtree数据展示
+                var param = {};
+                param.elem = 'menuTree';
+                param.data = data;
+                param.display = {
+                    title: 'name',
+                    treeId: 'id',
+                    parentId: 'parentId'
+                }
+                global.dtreeRender(param);
+                debugger
+                if (flag == true) {
+                    for (var i = 0; i < data.length; i++) {
+
+                        if (data[i].parentId == "0") {
+                            conditionOrg.parentId = data[i].id;
+                            layui.parentId = data[i].id;
+                        }
+                    }
+                }
+
+            },
+
+            //4.表格加载
+            tableRender: function () {
+                debugger
+                //查询区域
+                var querybar = tablex.querybar;
+                querybar.text("名称", "name");
+                querybar.select("显示情况", "isVisible");
+                querybar.button("btnQuery", "查询", "&#xe615;", "query");
+                querybar.button("btnClear", "重置", "&#xe669;", "clear");
+
+                //工具栏
+                var toolbar = tablex.toolbar;
+                toolbar.add("新增", "add");
+                // toolbar.add("删除", "delete", "layui-btn-danger");
+
+                //操作列
+                var actionbar = tablex.actionbar;
+                actionbar.add("编辑", "edit");
+                actionbar.add("删除", "del", "layui-btn-danger");
+
+                //数据列
+                var col = tablex.column;
+
+                col.querybar("query-menu", querybar.cols); //输出查询区域
+                col.toolbar(toolbar.cols); //输出工具栏
+
+                col.number();
+                col.hide('ID', "id");
+                col.text("名称", "name");
+                col.text("编码", "code");
+                col.text("图标", "icon", "", "",
+                    "<div>{{#  if(d.icon !== ''){}}<i class='layui-icon {{d.icon}}' style='font-size: 20px; '></i>  {{#  } }}</div>"
+                );
+                col.text("路径", "url");
+
+                col.text("显示情况", "isVisible", "", "",
+                    "<div>{{#  if(d.isVisible === '1'){ }}<i class='layui-icon layui-icon-ok-circle' style='font-size: 20px; color: green;'></i>   {{#  } if(d.isVisible === '0') { }}<i class='layui-icon layui-icon-close-fill' style='font-size: 20px; color: red;'></i> {{#  } }}</div>"
+                );
+
+                col.text("类型", "type", "", "",dicTransType);
+                col.text("次序", "sorting");
+                col.actionbar("操作", actionbar.cols); //输出操作列
+
+
+                //表格输出
+                $('#table-menu').table({
+                    url: config.url + 'menu/dynamicq/query',
+                    method: "post",
+                    toolbar: col.tools,
+                    height: 'full-250',
+                    cols: col.cols,
+                    where: {
+                        "entity": {
+                            "parentId": layui.parentId
+                        },
+                        "tableName": $('#menutableName').val()
+                    }
+                });
+            },
+
+            //5. 表格重载
+            reloadTable: function (data) {
+                debugger
+                data.parentId = layui.parentId;
+                table.reload("table-menu", {
+                    where: {
+                        "entity": jutil.json(data),
+                        "tableName": $('#menutableName').val()
+                    },
+                    page: {
+                        curr: 1
+                    }
+                });
+            },
+
+            //6.弹出层
+            post: function (data) {
+                debugger
+                if (data) {
+                    var parentId = data.parentId;
+
+                } else {
+                    var data = {};
+                    data.parentId = layui.parentId;
+                    var parentId = layui.parentId;
+                }
+                var param = {};
+                param.url = '/menu/dynamicq/query';
+                param.condition = {
+                    entity: {
+                        "id": parentId
+                    },
+                    "tableName": $('#menutableName').val()
+                };
+                var obj = global.commonQuery(param);
+                debugger
+                data.parentName = obj[0].name;
+                data.appId = obj[0].appId;
+                data.tableName = $('#menutableName').val();
+                debugger
+                tablex.post("menu", "userauthen/appMenu/menu/view", "form-submit-menu", {
+                    width: '760px',
+                    height: '530px',
+                    title: "菜单维护"
+                }, config.url + "menu/dynamic/", data, function (index, json) {
+                    var field = {};
+                    active.reloadTable(field);
+                    active.initTree();
+                    layer.close(index);
+                });
+            }
+
+        }
+
+        //******初始化******
+        active.selectMenutableName(); //动态表格select展示
+        active.initTree();
+        active.tableRender();
+        global.pickDic_mul({isVisible:'显示隐藏'}); //字典字段初始化
+        
+
+        //******事件监听******
+        //1. select事件监听
+        form.on('select(menutableName)', function (data) {
+            debugger
+            layui.menutableName = $('#menutableName').val();
+            // console.log(data.value)
+            var param = {};
+            param.url = 'menu/dynamicq';
+            param.condition = {
+                entity: {},
+                "tableName": data.value
+            };
+            var obj = global.commonQuery(param);
+            active.reloadTree(obj, true);
+            var field = {};
+            active.reloadTable(field);
+
+        });
+
+        //2. dtree事件监听
+        dtree.on("node('menuTree')", function (obj) {
+            layui.parentId = obj.param.nodeId;
+            conditionOrg.parentId = obj.param.nodeId;
+            active.reloadTable(conditionOrg);
+        });
+
+        //3.监听查询按钮
+        form.on('submit(query)', function (data) {
+            debugger
+            active.reloadTable(data.field);
+            return false;
+        });
+
+        //4. 监听重置按钮
+        form.on('submit(clear)', function (data) {
+            debugger
+            form.val("query-menu", jutil.empty(data.field));
+            active.reloadTable(data.field);
+            return false;
+        });
+
+        //5. 工具栏事件新增
+        table.on('toolbar(table-menu)', function (obj) {
+            var checkStatus = table.checkStatus(obj.config.id);
+            debugger
+            if (obj.event == "add") {
+                active.post();
+            }
+        });
+
+        //6. 操作列按钮事件监听：应该监听表格的lay-filter
+        //修改或删除
+        table.on('tool(table-menu)', function (obj) {
+            var event = obj.event;
+            var data = obj.data;
+            var field = {};
+            if (obj.event === 'del') {
+                tablex.delete(config.url + "menu/dynamic/" + $('#menutableName').val() + "/" + data.id,
+                    function (json) {
+                        active.reloadTable(field);
+                        active.initTree();
+                    });
+
+            } else if (obj.event === 'edit') {
+                active.post(data);
+            }
+        });
+
+
+
+
+
+    });
+</script>

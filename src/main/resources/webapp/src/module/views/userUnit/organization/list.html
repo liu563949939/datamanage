@@ -1,0 +1,184 @@
+<title></title>
+
+<div class="layui-card layadmin-header">
+    <div class="layui-breadcrumb" lay-filter="breadcrumb">
+        <a lay-href="">主页</a>
+        <a><cite>用户管理</cite></a>
+        <a><cite>组织机构</cite></a>
+    </div>
+</div>
+
+<div style="width:25%;float: left;overflow-y:auto; overflow-x:scroll; height:500px;">
+    <ul id="organizationTree" class="dtree" data-id="0"></ul>
+</div>
+<div style="width:75%;float: right">
+    <div class="layui-card">
+        <div class="layui-form layui-card-header layuiadmin-card-header-auto" lay-filter="query-organization">
+            <div class="layui-form-item" id="query-organization">
+            </div>
+        </div>
+        <div class="layui-card-body">
+            <table class="layui-hide" id="table-organization" lay-filter="table-organization"></table>
+        </div>
+    </div>
+</div>
+
+<script>
+    layui.use(['table', 'tablex', 'layer', 'form', 'jutil', 'userauthen', 'dtree', 'global'], function () {
+        var $ = layui.$,
+            table = layui.table,
+            layer = layui.layer,
+            form = layui.form,
+            jutil = layui.jutil,
+            config = layui.userauthen,
+            dtree = layui.dtree,
+            global = layui.global;
+
+        //******变量定义******
+        var tablex = new layui.tablex();
+        layui.parentid = '0'; //父节点ID
+
+        var area = layui.sessionData(layui.setter.tableName)['unit'], //所属单位
+            condition = {area: ''};
+
+        if(area != '000000') {
+            condition.area = area.substring(0,4); //所属单位
+        }
+        
+        //******方法定义******
+        var active = {
+            //1.树加载
+            dtreeRender: function(){
+                dtree.render({
+                    elem: "#organizationTree",
+                    //url: config.url + 'organization/getOrganizationTree',
+                    url: config.url + 'publicQuery/getTree',
+                    dataStyle: "layuiStyle",
+                    dataFormat: "list",  //配置data的风格为list
+                    request: condition, //条件(单位类型)
+                    response:{message:"msg",statusCode:0,title:"name",treeId:"nodeid",parentId:"parentid"},  //修改response中返回数据的定义
+                    initLevel: 3,  // 指定初始展开节点级别
+                    checkbar:true, //开启复选框
+                    dot:false, //默认小圆点
+                    icon: '4',
+                    done: function(data, obj){
+                        active.tableRender();
+                    }
+                })
+
+            },
+
+            //2.表格加载
+            tableRender: function(){
+                //查询区域
+                var querybar = tablex.querybar;
+                querybar.text("名称", "name");
+                querybar.button("btnQuery", "查询", "&#xe615;", "query");
+                querybar.button("btnClear", "重置", "&#xe669;", "clear");
+
+                //工具栏
+                var toolbar = tablex.toolbar;
+                toolbar.add("新增", "add");
+
+                //操作列
+                var actionbar = tablex.actionbar;
+                actionbar.add("编辑", "edit");
+                actionbar.add("删除", "del", "layui-btn-danger");
+
+                //数据列
+                var col = tablex.column;
+
+                col.querybar("query-organization", querybar.cols); //输出查询区域
+                col.toolbar(toolbar.cols); //输出工具栏
+
+                col.number();
+                col.hide('ID', "id");
+                col.text('名称', 'name');
+                col.text('对象标识', 'nodeid');
+                col.text('节点标识', 'parentid');
+                col.actionbar("操作", actionbar.cols); //输出操作列
+
+                //表格输出
+                $('#table-organization').table({
+                    url: config.url + 'organization/query',
+                    method: "post",
+                    toolbar: col.tools,
+                    height: 'full-250',
+                    cols: col.cols,
+                    where: {parentid: layui.parentid}
+                });
+            },
+
+            //3.表格重载
+            tableReload: function(data){
+                if(typeof(data) == 'undefined') {
+                    data = {}
+                }
+                data.parentid = layui.parentid;
+                table.reload("table-organization", {
+                    where: jutil.json(data),
+                    page: {
+                        curr: 1
+                    }
+                });
+            },
+
+            //4.弹出层
+            post: function(data) {
+                tablex.post("organization", "userauthen/userUnit/organization/view", "form-submit-organization", {
+                    width: '760px',
+                    height: '400px',
+                    title: "组织机构"
+                }, config.url + "organization/", data, function (index, json) {
+                    active.tableReload();
+                    layer.close(index);
+                });
+            }
+
+        }
+
+
+        //******初始化代码******
+        active.dtreeRender();
+        
+
+        //******事件监听******
+        //1.dtree事件监听
+        dtree.on("node('organizationTree')", function (obj) {
+            layui.parentid = obj.param.nodeId;
+            active.tableReload();
+        })
+
+        //2.查询按钮监听
+        form.on('submit(query)', function (data) {
+            active.tableReload(data.field);
+        });
+
+        //3.重置按钮监听
+        form.on('submit(clear)', function (data) {
+            form.val("query-organization", jutil.empty(data.field));
+            active.tableReload(data.field);
+        });
+
+        //4.头工具栏(新增)
+        table.on('toolbar(table-organization)', function (obj) {
+            if (obj.event == "add") {
+                active.post();
+            }
+        });
+
+        //5.行工具栏(编辑)
+        table.on('tool(table-organization)', function (obj) {
+            var event = obj.event;
+            var data = obj.data;
+            if (obj.event === 'del') {
+                tablex.delete(config.url + "organization/" + data.id, function (json) {
+                    active.tableReload();
+                });
+            } else if (obj.event === 'edit') {
+                active.post(data);
+            }
+        });
+
+    });
+</script>

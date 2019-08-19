@@ -1,0 +1,141 @@
+<title></title>
+
+<div class="layui-card layadmin-header">
+    <div class="layui-breadcrumb" lay-filter="breadcrumb">
+        <a lay-href="">主页</a>
+        <a><cite>菜单管理</cite></a>
+        <a><cite>菜单表管理</cite></a>
+    </div>
+</div>
+
+<div class="layui-fluid">
+    <div class="layui-card">
+        <div class="layui-card-body">
+            <table class="layui-hide" id="table-menutable" lay-filter="table-menutable"></table>
+        </div>
+    </div>
+</div>
+
+<script>
+    layui.use(['table', 'tablex', 'layer', 'form', 'jutil', 'Q', 'userauthen', 'global'], function () {
+        var table = layui.table,
+            layer = layui.layer,
+            form = layui.form,
+            jutil = layui.jutil,
+            config = layui.userauthen,
+            global = layui.global,
+            q = layui.Q;
+
+        //******变量定义******
+        var tablex = new layui.tablex();
+
+        //******方法定义******
+        var active = {
+            //1.表格加载
+            tableRender: function () {
+                //工具栏
+                var toolbar = tablex.toolbar;
+                toolbar.add("新增", "add");
+                // toolbar.add("删除", "delete", "layui-btn-danger");
+
+                //操作列
+                var actionbar = tablex.actionbar;
+                actionbar.add("生成", "builder");
+                actionbar.add("编辑", "edit");
+                actionbar.add("删除", "del", "layui-btn-danger");
+
+                //数据列
+                var col = tablex.column;
+                col.toolbar(toolbar.cols); //输出工具栏
+
+                col.number();
+                col.hide('ID', "id");
+                col.text("名称", "name");
+                col.text("表名", "tableName");
+                col.text("表结构", "status", "", "",
+                    "<div>{{#  if(d.status === 1){ }}<i class='layui-icon layui-icon-ok-circle' style='font-size: 20px; color: green;'></i>   {{#  } else { }}<i class='layui-icon layui-icon-close-fill' style='font-size: 20px; color: red;'></i> {{#  } }}</div>"
+                );
+                col.text("显示情况", "isVisible", "", "",
+                    "<div>{{#  if(d.isVisible === '1'){ }}<i class='layui-icon layui-icon-ok-circle' style='font-size: 20px; color: green;'></i>   {{#  } if(d.isVisible === '0') { }}<i class='layui-icon layui-icon-close-fill' style='font-size: 20px; color: red;'></i> {{#  } }}</div>"
+                );
+
+                col.text("次序", "sorting");
+                col.actionbar("操作", actionbar.cols); //输出操作列
+
+                //表格输出
+                $('#table-menutable').table({
+                    url: config.url + 'menutable/query',
+                    method: "post",
+                    toolbar: col.tools,
+                    height: 'full-150',
+                    cols: col.cols
+                });
+
+            },
+
+            //2.弹出层
+            post: function (data) {
+                debugger
+                if (data) {
+                    var json = {};
+                    json.id = data.appId;
+                    var param = {};
+                    param.url = '/appInfo/query';
+                    param.condition = json;
+                    var obj = global.commonQuery(param);
+                    debugger;
+                    data.appName = obj[0].name;
+                }
+                tablex.post("menutable", "userauthen/appMenu/menutable/view", "form-submit-menutable", {
+                    width: '400px',
+                    height: '470px',
+                    title: "菜单表维护"
+                }, config.url + "menutable/", data, function (index, json) {
+                    debugger
+                    table.reload("table-menutable");
+                    layer.close(index);
+                });
+            }
+        }
+
+        //******初始化******
+        active.tableRender();
+
+
+        //******事件监听******
+        //1.新增
+        //工具栏事件
+        table.on('toolbar(table-menutable)', function (obj) {
+            var checkStatus = table.checkStatus(obj.config.id);
+            if (obj.event == "add") {
+                active.post();
+            }
+        });
+
+        //2.修改或删除
+        //操作列按钮事件监听：应该监听表格的lay-filter
+        table.on('tool(table-menutable)', function (obj) {
+            debugger
+            var event = obj.event;
+            var data = obj.data;
+            if (obj.event === 'del') {
+                tablex.delete(config.url + "menutable/" + data.id, function (json) {
+                    table.reload("table-menutable");
+                });
+            } else if (obj.event === 'edit') {
+                active.post(data);
+            } else if (obj.event === 'builder') {
+                q.post(config.url + '/menutable/new', JSON.stringify(data), function (json) {
+                    if (json.code == "0") {
+                        layer.msg("创建表失败！");
+                    } else {
+                        layer.msg("创建表成功！");
+                    }
+                    table.reload("table-menutable");
+                });
+            }
+        });
+
+
+    });
+</script>

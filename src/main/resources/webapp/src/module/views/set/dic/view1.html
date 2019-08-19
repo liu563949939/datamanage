@@ -1,0 +1,88 @@
+<div class="layui-form" lay-filter="root-form-list">
+    <!--ID(隐藏)-->
+    <div class="layui-form-item">
+        <div class="layui-input-inline">
+            <script type="text/html" template>
+                <input type="hidden" name="id" value="{{ d.params.id || '' }}"  placeholder="ID" autocomplete="off" class="layui-input">
+          </script>
+        </div>
+    </div>
+    <!--parentId(隐藏)-->
+    <div class="layui-form-item">
+        <div class="layui-input-inline">
+            <input type="hidden" name="parentId" id="parentId" class="layui-input">
+        </div>
+    </div>
+    <!--名称-->
+    <div class="layui-form-item">
+        <label class="layui-form-label"><span style="color: red; ">*</span>名称：</label>
+        <div class="layui-input-inline">
+            <script type="text/html" template>
+                <input type="text" name="name" value="{{ d.params.name || '' }}" lay-verify="required" placeholder="请输入名称" autocomplete="off" class="layui-input">
+        </script>
+        </div>
+    </div>
+
+    <!--代码类型-->
+    <div class="layui-form-item">
+        <label class="layui-form-label">代码类型：</label>
+        <div class="layui-input-block">
+            <script type="text/html" template>
+                <input type="radio" name="type" value="1" title="分类" {{ d.params.type === 1 ? 'checked' : 'checked' }}>
+        <input type="radio" name="type" value="0" title="数据项" {{ d.params.type === 0 ? 'checked' : '' }}>
+      </script>
+        </div>
+    </div>
+
+    <!--显示情况-->
+    <div class="layui-form-item">
+        <label class="layui-form-label">显示情况：</label>
+        <div class="layui-input-block">
+            <script type="text/html" template>
+                <input type="radio" name="isVisible" value="1" title="显示" {{ d.params.isVisible === '1' ? 'checked' : 'checked' }}>
+            <input type="radio" name="isVisible" value="0" title="隐藏" {{ d.params.isVisible === '0' ? 'checked' : '' }}>
+          </script>
+        </div>
+    </div>
+    <!--代码值-->
+    <div class="layui-form-item">
+        <label class="layui-form-label">代码值：</label>
+        <div class="layui-input-inline">
+            <script type="text/html" template>
+                <input type="text" name="codeValue" value="{{ d.params.codeValue || '' }}"  placeholder="请输入代码值" autocomplete="off" class="layui-input">
+    </script>
+        </div>
+    </div>
+    <!--代码字符-->
+    <div class="layui-form-item">
+        <label class="layui-form-label">代码字符</label>
+        <div class="layui-input-inline">
+            <script type="text/html" template>
+                <input type="text" name="codeName" value="{{ d.params.codeName || '' }}"  placeholder="请输入代码字符" autocomplete="off" class="layui-input">
+    </script>
+        </div>
+    </div>
+    <!--次序-->
+    <div class="layui-form-item">
+        <label class="layui-form-label"><span style="color: red; ">*</span>次序：</label>
+        <div class="layui-input-inline">
+            <script type="text/html" template>
+                <input type="number" name="sorting" value="{{ d.params.sorting || '' }}" lay-verify="required" placeholder="请输入次序" autocomplete="off" class="layui-input">
+          </script>
+        </div>
+    </div>
+    <div class="layui-input-inline">
+        <script type="text/html" template>
+            <input type="hidden" name="tableName" value="{{ d.params.tableName || '' }}"  autocomplete="off" class="layui-input">
+        </script>
+    </div>
+    <!--按钮提交-->
+    <div class="layui-form-item" style="text-align:center;padding:10px;">
+        <input type="button" lay-submit lay-filter="form-submit-code" value="确认" class="layui-btn">
+    </div>
+</div>
+
+<script>
+    debugger
+    $('#parentId').val(parent.layui.parentId);
+</script>

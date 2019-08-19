@@ -1,0 +1,147 @@
+<title></title>
+
+<div class="layui-card layadmin-header">
+    <div class="layui-breadcrumb" lay-filter="breadcrumb">
+        <a lay-href="">主页</a>
+        <a><cite>代码管理</cite></a>
+        <a><cite>代码表管理</cite></a>
+    </div>
+</div>
+
+<div class="layui-fluid">
+    <div class="layui-card">
+        <div class="layui-form layui-card-header layuiadmin-card-header-auto" lay-filter="query-codetable">
+            <div class="layui-form-item" id="query-codetable">
+            </div>
+        </div>
+        <div class="layui-card-body">
+            <table class="layui-hide" id="table-codetable" lay-filter="table-codetable"></table>
+        </div>
+    </div>
+</div>
+
+<script>
+    layui.use(['table', 'tablex', 'layer', 'form', 'jutil', 'Q', 'userauthen'], function () {
+        var table = layui.table,
+            layer = layui.layer,
+            form = layui.form,
+            jutil = layui.jutil,
+            config = layui.userauthen,
+            q = layui.Q;
+
+        //******变量定义******   
+        var tablex = new layui.tablex();
+
+        //******方法定义******
+        var active = {
+            //1.表格加载
+            tableRender: function () {
+                //工具栏
+                var toolbar = tablex.toolbar;
+                toolbar.add("新增", "add");
+
+                //操作列
+                var actionbar = tablex.actionbar;
+                actionbar.add("生成", "builder");
+                actionbar.add("编辑", "edit");
+                actionbar.add("删除", "del", "layui-btn-danger");
+
+                //数据列
+                var col = tablex.column;
+                col.toolbar(toolbar.cols); //输出工具栏
+
+                col.number();
+                col.hide('ID', "id");
+                col.text("名称", "name");
+                col.text("表名", "tableName");
+                col.text("表结构", "status", "", "",
+                    "<div>{{#  if(d.status === 1){ }}<i class='layui-icon layui-icon-ok-circle' style='font-size: 20px; color: green;'></i>   {{#  } else { }}<i class='layui-icon layui-icon-close-fill' style='font-size: 20px; color: red;'></i> {{#  } }}</div>"
+                );
+                col.text("显示情况", "isVisible", "", "",
+                    "<div>{{#  if(d.isVisible === '1'){ }}<i class='layui-icon layui-icon-ok-circle' style='font-size: 20px; color: green;'></i>   {{#  } if(d.isVisible === '0') { }}<i class='layui-icon layui-icon-close-fill' style='font-size: 20px; color: red;'></i> {{#  } }}</div>"
+                );
+                col.text("次序", "sorting");
+                col.actionbar("操作", actionbar.cols); //输出操作列
+
+                //表格输出
+                $('#table-codetable').table({
+                    url: config.url + 'codeTable/query',
+                    method: "post",
+                    toolbar: col.tools,
+                    height: 'full-250',
+                    cols: col.cols
+                });
+            },
+
+            //2.弹出层
+            post: function (data) {
+                tablex.post("codetable", "userauthen/codeTable/view", "form-submit-codetable", {
+                    width: '400px',
+                    height: '380px',
+                    title: "代码表维护"
+                }, config.url + "codeTable/", data, function (index, json) {
+                    table.reload("table-codetable");
+                    layer.close(index);
+                });
+            }
+        }
+
+        //******初始化******
+        active.tableRender();
+
+
+        //******事件监听******
+        //1.监听查询按钮
+        form.on('submit(query)', function (data) {
+            table.reload("table-codetable", {
+                where: jutil.json(data.field)
+            });
+            return false; //阻止表单跳转
+        });
+
+
+        //2. 监听重置按钮
+        form.on('submit(clear)', function (data) {
+            form.val("query-codetable", jutil.empty(data.field));
+            table.reload("table-codetable", {
+                where: null
+            });
+            return false;
+        });
+
+        //3. 工具栏事件新增
+        table.on('toolbar(table-codetable)', function (obj) {
+            var checkStatus = table.checkStatus(obj.config.id);
+            if (obj.event == "add") {
+                active.post();
+            }
+        });
+
+        //4. 操作列按钮事件监听：应该监听表格的lay-filter
+        //修改或删除
+        table.on('tool(table-codetable)', function (obj) {
+            var event = obj.event;
+            var data = obj.data;
+            if (obj.event === 'del') {
+                tablex.delete(config.url + "codeTable/" + data.id, function (json) {
+                    table.reload("table-codetable");
+                });
+            } else if (obj.event === 'edit') {
+                active.post(data);
+            } else if (obj.event === 'builder') {
+                q.post(config.url + '/codeTable/new', JSON.stringify(data), function (json) {
+                    if (json.code == "0") {
+                        layer.msg("创建表失败！");
+                    } else {
+                        layer.msg("创建表成功！");
+                    }
+                    table.reload("table-codetable");
+                });
+            }
+        });
+
+        
+
+
+    });
+</script>

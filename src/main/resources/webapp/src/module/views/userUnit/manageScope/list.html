@@ -1,0 +1,143 @@
+<title></title>
+
+<div class="layui-card layadmin-header">
+    <div class="layui-breadcrumb" lay-filter="breadcrumb">
+        <a lay-href="">主页</a>
+        <a><cite>用户管理</cite></a>
+        <a><cite>分级管理</cite></a>
+    </div>
+</div>
+
+<div class="layui-fluid">
+    <div class="layui-card">
+        <div class="layui-form layui-card-header layuiadmin-card-header-auto" lay-filter="query-manageScope">
+            <div class="layui-form-item" id="query-manageScope">
+            </div>
+        </div>
+        <div class="layui-card-body">
+            <table class="layui-hide" id="table-manageScope" lay-filter="table-manageScope"></table>
+        </div>
+    </div>
+</div>
+
+<script>
+    layui.use(['table', 'tablex', 'layer', 'form', 'jutil', 'userauthen', 'dictpl','Q','global'], function () {
+        var $ = layui.$,
+            table = layui.table,
+            layer = layui.layer,
+            form = layui.form,
+            jutil = layui.jutil,
+            config = layui.userauthen,
+            dictpl = layui.dictpl,
+            Q = layui.Q,
+            global = layui.global;
+
+
+        //***变量定义***
+        var tablex = new layui.tablex(),
+            url = 'publicQuery/query',
+            userName = '';
+            condition = {type: 'usermanage',field1: '',field2: ''}, //查询条件(所属单位、姓名、用户名)
+            area = layui.sessionData(layui.setter.tableName)['unit']; //所属单位
+        //字典模板
+        var dicTransType = dictpl.render({dicName: '性别',dicField: 'sex'});
+            dicTransArea = dictpl.render({dicName: '行政区划',dicField: 'area'});
+
+        //***方法定义***
+        //1.表格初始化
+        var active = {
+            tableRender: function () {
+                //查询区域
+                var querybar = tablex.querybar;
+                querybar.text("姓名", "name");
+                querybar.text("用户名", "userName");
+                querybar.button("btnQuery", "查询", "&#xe615;", "query");
+                querybar.button("btnClear", "重置", "&#xe669;", "clear");
+
+                //行工具栏
+                var actionbar = tablex.actionbar;
+                actionbar.add("管理", "manage");
+
+                //数据列
+                var col = tablex.column;
+
+                col.querybar("query-manageScope", querybar.cols); //输出查询区域
+
+                col.number();
+                col.hide("ID", "id");
+                col.text("姓名", "name");
+                col.text("性别", "sex", "", "",dicTransType);
+                col.text("电话", "phone");
+                col.text("用户名", "userName");
+                col.text("所属机构", "area");
+                col.actionbar("操作", actionbar.cols); //输出操作列
+
+
+                //表格输出
+                $('#table-manageScope').table({
+                    url: config.url + url,
+                    method: "post",
+                    toolbar: col.tools,
+                    defaultToolbar: col.dtools,
+                    totalRow: true,
+                    height: 'full-250',
+                    cols: col.cols,
+                    where: condition
+                });
+            },
+            //2.表格重载
+            tableReload: function (data) {
+                table.reload("table-manageScope", {
+                    where: data,
+                    page: {
+                        curr: 1
+                    }
+                })
+            },
+            //3.弹出层(应用管理)
+            manageScope: function(data) {
+                layui.userId = data.id; //用户ID
+
+                var param = {};
+                param.style = {title: '用户关联应用管理', width: '600px',height:'400px'}
+                param.id = 'manageScope';
+                param.path = 'userAuthen/userUnit/manageScope/view';
+                param.data = data.id; //用户信息
+                param.callback = function (data,index) { //回调函数(关闭页面)
+                    layer.close(index) //弹层关闭
+                }
+                global.pickInfo(param); //弹出窗体
+            }
+
+        }
+
+
+        //***初始化***
+        active.tableRender();
+
+
+        //***事件监听***
+
+        //1.管理
+        table.on('tool(table-manageScope)', function (obj) {
+            if (obj.event === 'manage') {
+                active.manageScope(obj.data);
+            } 
+        });
+
+        //2.查询
+        form.on('submit(query)', function (data) {
+            var param = {type:'usermanage',field1:data.field.name,field2:data.field.userName};
+            active.tableReload(param);
+        });
+
+        //3.监听重置按钮
+        form.on('submit(clear)', function (data) {
+            form.val("query-manageScope", jutil.empty(data.field));
+            active.tableReload(condition);
+        });
+
+
+
+    });
+</script>
