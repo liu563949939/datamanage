@@ -24,14 +24,24 @@ public class DataService {
     public Map<String,Object> getDataList(DataEntity dataEntity){
         Map<String,Object> sFhz = new HashMap<String,Object>();
         //1.获得条件
-        StringBuilder sCondition = new StringBuilder("select * from t_data");
-        StringBuilder sConditionCount = new StringBuilder("select count(*) from t_data");
-        //2.分页处理及条件
+        StringBuilder sCondition = new StringBuilder("select * from t_data where 1 = 1");
+        StringBuilder sConditionCount = new StringBuilder("select count(*) from t_data where 1 = 1");
+        //2.条件处理
+        if(dataEntity.getType() != null && !dataEntity.equals("")){
+            sCondition.append(" and type = " + dataEntity.getType());
+            sConditionCount.append(" and type = " + dataEntity.getType());
+        }
+        if(dataEntity.getName() != null && !dataEntity.getName().equals("")){
+            sCondition.append(" and name like '%" + dataEntity.getName() + "%'");
+            sConditionCount.append((" and name like '%" + dataEntity.getName() + "%'"));
+        }
+        //2.分页处理
         Integer iEnd = dataEntity.getLimit(); //结束
         Integer iStart = (dataEntity.getPage()-1)*iEnd; //开始
         sCondition.append(" limit " + String.valueOf(iStart) + ", " + String.valueOf(iEnd));
         //3.最终语句
         System.out.println(sCondition.toString());
+        System.out.println(sConditionCount.toString());
         Query query = entityManager.createNativeQuery(sCondition.toString(),DataEntity.class);
         Query queryCount = entityManager.createNativeQuery(sConditionCount.toString());
         List<DataEntity> dataList = query.getResultList(); //查询结果

@@ -1,10 +1,6 @@
 /**
-
  @Name：全局配置
- @Author：贤心
- @Site：http://www.layui.com/admin/
- @License：LPPL（layui付费产品协议）
-    
+ @Author：刘林
  */
 
 layui.define(['laytpl', 'layer', 'element', 'util'], function (exports) {
@@ -155,6 +151,13 @@ layui.define(['laytpl', 'layer', 'element', 'util'], function (exports) {
                 //如果本地已经有主题色记录，则以本地记录为优先，除非请求本地数据（localStorage）
                 ,
             initColorIndex: 0
+        },
+        //项目配置
+        datamanage:{
+            url: "http://127.0.0.1:2000/",
+            name: "资料管理系统",
+            copyright: "南京公安研究院",
         }
+
     });
 });

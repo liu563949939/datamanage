@@ -1,8 +1,5 @@
-
-
-
 //layui模块注册
-layui.define(['layer', 'jquery', 'table', 'thread'], function (exports) {
+layui.define(['layer', 'jquery', 'table', 'setter'], function (exports) {
     var $ = layui.jquery,
         //config = layui.userauthen,
         //dtree = layui.dtree,
@@ -11,24 +8,15 @@ layui.define(['layer', 'jquery', 'table', 'thread'], function (exports) {
         view = layui.view,
         form = layui.form,
         table = layui.table,
-        // Q = layui.Q,
-        config = layui.thread;
-
-    var urlLogin = config.url + 'user/query'; //查询接口
-
+        config = layui.setter;
 
     var obj = {
-        //*测试 */
-        a: function () {
-            alert('3333')
-        },
-
         //***(1)ajax通用方法***
         //1.通用查询--同步
         commonQuery: function (param) {
             $.ajax({
                 //1.请求地址和格式
-                url: config.url + param.url,
+                url: config.datamanage.url + param.url,
                 method: 'post', //请求方法
                 async: true, //是否异步
                 dataType: 'json', //预期服务器返回数据的类型
@@ -49,7 +37,7 @@ layui.define(['layer', 'jquery', 'table', 'thread'], function (exports) {
         commonAdd: function (param) {
             $.ajax({
                 //1.请求地址和格式
-                url: config.url + param.url,
+                url: config.datamanage.url + param.url,
                 method: param.method,
                 async: true, //是否异步
                 dataType: 'json',
@@ -58,6 +46,7 @@ layui.define(['layer', 'jquery', 'table', 'thread'], function (exports) {
                 data: JSON.stringify(param.entity),
                 //3.回调函数
                 success: function (obj) {
+                    debugger;
                     if (typeof (param.callback) == 'function') {
                         param.callback();
                     }
@@ -68,7 +57,7 @@ layui.define(['layer', 'jquery', 'table', 'thread'], function (exports) {
         //3.通用修改
         commonModify: function (param) {
             $.ajax({
-                url: config.url + param.url,
+                url: config.datamanage.url + param.url,
                 method: param.method,
                 headers: {
                     'Content-Type': 'application/json;charset=utf8'
@@ -86,7 +75,7 @@ layui.define(['layer', 'jquery', 'table', 'thread'], function (exports) {
         //4.删除
         commonDel: function (param) {
             $.ajax({
-                url: config.url + param.url,
+                url: config.datamanage.url + param.url,
                 method: param.method,
                 headers: { 'Content-Type': 'application/json;charset=utf8' },
                 data: JSON.stringify(param.entity),
@@ -141,6 +130,8 @@ layui.define(['layer', 'jquery', 'table', 'thread'], function (exports) {
             form.render('select'); //表单刷新(非常重要！)
         },
 
+
+
         //***(3)util函数***
         //1.日期增加(天数)
         dateCompute: function (sDate, sDayNum) {
@@ -153,6 +144,37 @@ layui.define(['layer', 'jquery', 'table', 'thread'], function (exports) {
 
 
 
+        //***(4)admin弹出层***
+        pop: function (param) {
+            debugger
+            var id = param.id; //内容div的id
+                i = param.data; //传入弹出层的参数(让子窗体绑定数据集)
+            admin.popup({
+                title: param.title, //标题
+                area: [param.width, param.height], //宽度和高度
+                id: id, 
+                success: function (layer, index) {
+                    $("#" + id).css('padding', '1px');
+                    layui.view(id).render(param.view, i).done(function () {
+                        form.render();
+                        form.on('submit(' + param.button + ')', function (data) {
+                            //ajax请求提交数据
+                            sparam = {};
+                            sparam.url = 'data/save';
+                            sparam.method = 'post';
+                            sparam.entity = data.field;
+                            obj.commonAdd(sparam);
+                            sparam.callback = function () {
+                                layui.layer.close(index); //关闭弹层
+                            }
+
+                        });
+                    });
+                }
+            });
+        },
+
+
 
 
         //-----------------------------------------------------------------------------以下方法无效--------------------------------------------------------------
@@ -161,7 +183,7 @@ layui.define(['layer', 'jquery', 'table', 'thread'], function (exports) {
         fileUpload: function (param) {
             upload.render({
                 elem: param.elem, //绑定元素
-                url: config.url + 'upload/save', //上传接口
+                url: config.datamanage.url + 'upload/save', //上传接口
                 size: 0,
                 choose: function (obj) {
                     var files = obj.pushFile();
@@ -193,7 +215,7 @@ layui.define(['layer', 'jquery', 'table', 'thread'], function (exports) {
         getTreeData: function (param) {
             var data = [];
             $.ajax({
-                url: config.url + param.url,
+                url: config.datamanage.url + param.url,
                 method: 'post',
                 async: false,
                 headers: { 'Content-Type': 'application/json;charset=utf8' },
@@ -234,7 +256,7 @@ layui.define(['layer', 'jquery', 'table', 'thread'], function (exports) {
 
             dtree.render({
                 elem: '#' + param.elem, //显示容器
-                url: config.url + url, //url
+                url: config.datamanage.url + url, //url
                 dataStyle: "layuiStyle", //layui数据格式
                 dataFormat: "list",  //配置data的风格为list
                 request: { type: "0" }, //条件

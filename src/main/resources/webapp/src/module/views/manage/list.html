@@ -10,25 +10,19 @@
 <body>
     <div class="layui-fluid">
         <div class="layui-card">
+            <!--查询条件-->
             <div class="layui-form layui-card-header layuiadmin-card-header-auto" lay-filter="query-threadTable">
                 <div class="layui-form-item" id="query-threadTable">
-                    <label class="layui-form-label" style="width:60px">线索类型</label>
+                    <label class="layui-form-label" style="width:60px">类型</label>
                     <div class="layui-input-inline">
-                        <select id="lx" name='lx'>
+                        <select id="type" name='type'>
+                            <option value="01">java</option>
+                            <option value="02">delphi</option>
                         </select>
                     </div>
-                    <label class="layui-form-label" style="width:60px">线索状态</label>
+                    <label class="layui-form-label" style="width:60px">名称</label>
                     <div class="layui-input-inline">
-                        <select id='zt' name='zt'>
-                        </select>
-                    </div>
-                    <label class="layui-form-label" style="width:60px">线索主题</label>
-                    <div class="layui-input-inline">
-                        <input type="text" class="layui-input" name='xszt'>
-                    </div>
-                    <label class="layui-form-label" style="width:60px">登记时间</label>
-                    <div class="layui-input-inline">
-                        <input type="text" class="layui-input" id='djsj' name='djsj'>
+                        <input type="text" class="layui-input" name='name'>
                     </div>
                     <button lay-submit lay-filter='query' class="layui-btn layui-btn-radius layui-btn-sm btn_query"> <i
                             class="layui-icon">&#xe615</i>查询</button>
@@ -36,6 +30,7 @@
                             class="layui-icon">&#xe669</i>清空</button>
                 </div>
             </div>
+            <!--表格显示-->
             <div class="layui-card-body">
                 <table class="layui-hide" id="table-dataTable" lay-filter="table-dataTable"></table>
             </div>
@@ -59,18 +54,22 @@
     <script src="/ui/layui/layui.js"></script>
     <script>
         layui.extend({
-            index: '{/}/ui/layui/core/index'
-        }).use(['layer', 'table', 'jquery', 'form', 'index', 'admin'], function () {
+            index: '{/}/ui/layui/core/index', //核心模块
+            exd: '{/}/ui/layui/extends/extend' //扩展模块
+        }).use(['layer', 'table', 'jquery', 'form', 'index','exd'], function () {
             var $ = layui.jquery,
                 layer = layui.layer,
                 table = layui.table,
                 form = layui.form,
-                admin = layui.admin;
+                admin = layui.admin,
+                config = layui.setter,
+                global = layui.global;
             // config = layui.thread,
             // jutil = layui.jutil,
             // global = layui.global,
             // dictpl = layui.dictpl,
             // laydate = layui.laydate;
+            debugger
             //***1.变量定义***
             //***2.方法定义***
             var active = {
@@ -229,68 +228,17 @@
                 var checkStatus = table.checkStatus(obj.config.id);
                 switch (obj.event) {
                     case 'insert':
-                        // var data = checkStatus.data;
-                        // layer.alert(JSON.stringify(data));
-                        //弹出页面:方式1
-                        // layer.open({
-                        //     type:2,
-                        //     content:'./view.html',
-                        //     area:['1200px','680px'],
-                        //     btn: ['按钮一', '按钮二', '按钮三'], //可以无限个按钮
-                        //     yes: function(index, layero){
-                        //         alert('1111');
-                        //         return false;
-                        //     }
-                        // })
-                        // break;
-                        //弹出页面:方式2(admin)
-                        var id = 'test';
-                        var views = '../view';
-                        var i = {};
-                        // debugger
-                        admin.popup({
-                            title: '测试',
-                            area: ['1200px', '680px'],
-                            id: id,
-                            success: function (layer, index) {
-                                $("#" + this.id).css('padding', '1px');
-                                layui.view(this.id).render(views, i).done(function () {
-                                    // debugger
-                                    form.render();
-                                    form.on('submit(form-submit-unit)', function (data) {
-                                        alert('222');
-                                        //ajax请求提交数据
-                                        $.ajax({
-                                            //1.请求地址和格式
-                                            url: 'http://127.0.0.1:2000/data/save',
-                                            method: 'post', //请求方法
-                                            async: true, //是否异步
-                                            dataType: 'json', //预期服务器返回数据的类型
-                                            //2.请求头和请求体
-                                            headers: { 'Content-Type': 'application/json;charset=utf8' },
-                                            data: JSON.stringify(data.field), //讲js对象序列化
-                                            //3.回调函数
-                                            success: function (obj) {
-                                                alert('222')
-                                            }
-                                        })
-                                    });
-                                    // form.on('submit(' + button + ')', function (data) {
-                                    //     data = JSON.stringify(data.field);
-                                    //     Q.post(method, url, data, function (json) {
-                                    //         if (json.code == "1") {
-                                    //             callback(index, json);
-                                    //         } else {
-                                    //             layer.msg(json.message);
-                                    //             layer.close(index);
-                                    //         }
-                                    //     });
-                                    // });
-                                });
-                            }
-                        });
+                       var sparam = {};
+                       sparam.title = '知识库登记'; //标题
+                       sparam.width = '1200px'; //宽度
+                       sparam.height = '680px'; //高度
+                       sparam.id = 'datamanage'; //内容div的id
+                       sparam.view = '../view'; //加载的页面路径
+                       sparam.data = {}; //传入弹出层的参数
+                       sparam.button = 'form-submit-unit'; //按钮
+                       global.pop(sparam);
+                       break;
                 };
-                console.log(obj)
             })
 
             //2.查询
