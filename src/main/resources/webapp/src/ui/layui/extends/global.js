@@ -18,7 +18,7 @@ layui.define(['layer', 'jquery', 'table', 'setter'], function (exports) {
                 //1.请求地址和格式
                 url: config.datamanage.url + param.url,
                 method: 'post', //请求方法
-                async: true, //是否异步
+                async: false, //是否异步
                 dataType: 'json', //预期服务器返回数据的类型
                 //2.请求头和请求体
                 headers: { 'Content-Type': 'application/json;charset=utf8' },
@@ -26,6 +26,7 @@ layui.define(['layer', 'jquery', 'table', 'setter'], function (exports) {
                 //3.回调函数
                 success: function (obj) {
                     if (param.type == 'dic') {
+                        debugger
                         param.data = obj.data;
                         param.callback(param);
                     }
@@ -104,7 +105,7 @@ layui.define(['layer', 'jquery', 'table', 'setter'], function (exports) {
             for (var i = 0; i < keys.length; i++) {
                 var param = {};
                 param.url = 'dic/query'; //字典请求地址
-                param.condition = { dicName: data[keys[i]] }; //获得字典项目
+                param.condition = { name: data[keys[i]] }; //获得字典项目
                 param.callback = obj.pickDic_callbak;
                 param.type = 'dic'; //字典查询
                 param.ele = keys[i]; //DOM对象的ID
@@ -112,7 +113,7 @@ layui.define(['layer', 'jquery', 'table', 'setter'], function (exports) {
             }
         },
 
-        //3.回调函数
+        //1.1.回调函数
         pickDic_callbak: function (data) {
             //select选项创建并赋值
             for (i = -1; i < data.data.length; i++) {
@@ -123,13 +124,30 @@ layui.define(['layer', 'jquery', 'table', 'setter'], function (exports) {
                     $(option).text('请选择');
                 } else {
                     $(option).val(data.data[i].code); //字典项
-                    $(option).text(data.data[i].item1); //字典值
+                    $(option).text(data.data[i].item); //字典值
                 }
                 $('#' + data.ele).append(option);
             }
             form.render('select'); //表单刷新(非常重要！)
         },
 
+        //2.字典字段赋值(多个--接收的是对象)
+        set_dicField: function (data) {
+            debugger
+            //key字段获取
+            var keys = [];
+            for (var k in data) {
+                if (data.hasOwnProperty(k)) {
+                    keys.push(k)
+                }
+            }
+            //循环对DOM进行赋初始值
+            for (var i = 0; i < keys.length; i++) {
+                //$("#" + keys[i]).find("option[value=" + data[keys[i]] + "]").attr("selected",true);
+                $("#" + keys[i]).val(data[keys[i]]);
+            }
+            form.render('select'); //表单刷新(非常重要！) 
+        },
 
 
         //***(3)util函数***
@@ -158,6 +176,7 @@ layui.define(['layer', 'jquery', 'table', 'setter'], function (exports) {
                     layui.view(id).render(param.view, i).done(function () {
                         form.render();
                         form.on('submit(' + param.button + ')', function (data) {
+                            debugger
                             //ajax请求提交数据
                             sparam = {};
                             sparam.url = 'data/save';
@@ -356,31 +375,6 @@ layui.define(['layer', 'jquery', 'table', 'setter'], function (exports) {
         },
 
 
-
-        //4.1字典字段赋值(单个)
-        set_dicField: function (lb, sValue) {
-            $("#" + lb).find("option[value=" + sValue + "]").attr("selected", true);
-            form.render('select'); //表单刷新(非常重要！) 
-        },
-
-        //4.2字典字段赋值(多个--接收的是对象)
-        set_dicField_mul: function (data) {
-            //key字段获取
-            var keys = [];
-            for (var k in data) {
-                if (data.hasOwnProperty(k)) {
-                    keys.push(k)
-                }
-            }
-
-            //循环对DOM进行赋初始值
-            for (var i = 0; i < keys.length; i++) {
-                //$("#" + keys[i]).find("option[value=" + data[keys[i]] + "]").attr("selected",true);
-                $("#" + keys[i]).val(data[keys[i]]);
-            }
-
-            form.render('select'); //表单刷新(非常重要！) 
-        },
 
 
 

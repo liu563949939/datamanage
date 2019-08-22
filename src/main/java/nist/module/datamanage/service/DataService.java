@@ -27,7 +27,7 @@ public class DataService {
         StringBuilder sCondition = new StringBuilder("select * from t_data where 1 = 1");
         StringBuilder sConditionCount = new StringBuilder("select count(*) from t_data where 1 = 1");
         //2.条件处理
-        if(dataEntity.getType() != null && !dataEntity.equals("")){
+        if(dataEntity.getType() != null && !dataEntity.getType().equals("")){
             sCondition.append(" and type = " + dataEntity.getType());
             sConditionCount.append(" and type = " + dataEntity.getType());
         }
@@ -35,11 +35,11 @@ public class DataService {
             sCondition.append(" and name like '%" + dataEntity.getName() + "%'");
             sConditionCount.append((" and name like '%" + dataEntity.getName() + "%'"));
         }
-        //2.分页处理
+        //3.分页处理
         Integer iEnd = dataEntity.getLimit(); //结束
         Integer iStart = (dataEntity.getPage()-1)*iEnd; //开始
         sCondition.append(" limit " + String.valueOf(iStart) + ", " + String.valueOf(iEnd));
-        //3.最终语句
+        //4.语句执行
         System.out.println(sCondition.toString());
         System.out.println(sConditionCount.toString());
         Query query = entityManager.createNativeQuery(sCondition.toString(),DataEntity.class);
@@ -48,7 +48,7 @@ public class DataService {
         Object obj = queryCount.getSingleResult();
         Long count = Long.valueOf(String.valueOf(obj));
 
-        //4.组织返回结果
+        //5.组织返回结果
         sFhz.put("dataList",dataList);
         sFhz.put("count",count);
         return sFhz;

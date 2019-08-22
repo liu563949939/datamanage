@@ -3,9 +3,7 @@
         <!--jlbh(隐藏)-->
         <div class="layui-form-item">
             <div class="layui-input-inline">
-                <script type="text/html" template>
-                    <input type="hidden" name="jlbh" value="{{ d.params.jlbh || '' }}" placeholder="记录编号" autocomplete="off" class="layui-input">
-                </script>
+                <input type="hidden" id="jlbh" name="jlbh" placeholder="记录编号" autocomplete="off" class="layui-input">
             </div>
         </div>
 
@@ -13,21 +11,18 @@
         <div class="layui-form-item">
             <label class="layui-form-label"><span style="color: red;">*</span>类型</label>
             <div class="layui-input-inline">
-                <script type="text/html" template>
-                    <input type="text" name="type" value="{{ d.params.type || '' }}" lay-verify="required" placeholder="请输入类型" autocomplete="off" class="layui-input">
-                </script>
+                <select name="type" id="type1" lay-verify="required">
+                </select>
             </div>
             <label class="layui-form-label"><span style="color: red;">*</span>名称</label>
             <div class="layui-input-inline">
-                <script type="text/html" template>
-                    <input type="text" name="name" value="{{ d.params.name || '' }}" lay-verify="required|number" placeholder="请输入名称" autocomplete="off" class="layui-input">
-                </script>
+                <input type="text" id="name" name="name" lay-verify="required|number" placeholder="请输入名称"
+                    autocomplete="off" class="layui-input">
             </div>
             <label class="layui-form-label"><span style="color: red;">*</span>登记时间</label>
             <div class="layui-input-inline">
-                <script type="text/html" template>
-                    <input type="text" name="createTime" value="{{ d.params.createTime || '' }}" lay-verify="required|number" placeholder="请输入登记时间" autocomplete="off" class="layui-input">
-                </script>
+                <input type="text" id="createTime" name="createTime" lay-verify="required|number" placeholder="请输入登记时间"
+                    autocomplete="off" class="layui-input">
             </div>
         </div>
 
@@ -35,9 +30,8 @@
         <div class="layui-form-item">
             <label class="layui-form-label"><span style="color: red;">*</span>内容</label>
             <div class="layui-input-inline">
-                <script type="text/html" template>
-                <textarea name="content" value="{{ d.params.content || '' }}" lay-verify="required" placeholder="请输入内容" class="layui-textarea" style="width:810px;height:420px"></textarea>
-                </script>
+                <textarea id="content" name="content" value="{{ d.params.content || '' }}" lay-verify="required"
+                    placeholder="请输入内容" class="layui-textarea" style="width:810px;height:420px"></textarea>
             </div>
 
         </div>
@@ -50,3 +44,29 @@
         </div>
     </div>
 </div>
+
+<!--动态模板定义-->
+<script type="text/html" template lay-done="layui.data.done(d)">
+</script>
+
+<script>
+    layui.data.done = function (d) {
+        var sParam = d.params;
+
+        layui.use(['global', 'form'], function () {
+            var $ = layui.jquery,
+                form = layui.form,
+                global = layui.global;
+
+            //1.字典字段初始化
+            global.pickDic({ type1: '资料类型' });
+            //2.赋初值(普通字段)
+            $('#jlbh').val(sParam.jlbh);
+            $('#name').val(sParam.name);
+            $('#createTime').val(sParam.createTime);
+            $('#content').val(sParam.content);
+            //2.1.赋初值(字典字段)
+            global.set_dicField({ type1: sParam.type }); //字典字段赋初始值
+        })
+    }
+</script>

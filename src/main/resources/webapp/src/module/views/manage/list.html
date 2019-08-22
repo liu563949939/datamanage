@@ -11,13 +11,11 @@
     <div class="layui-fluid">
         <div class="layui-card">
             <!--查询条件-->
-            <div class="layui-form layui-card-header layuiadmin-card-header-auto" lay-filter="query-threadTable">
-                <div class="layui-form-item" id="query-threadTable">
+            <div class="layui-form layui-card-header layuiadmin-card-header-auto" lay-filter="query-datadTable">
+                <div class="layui-form-item" id="query-datadTable">
                     <label class="layui-form-label" style="width:60px">类型</label>
                     <div class="layui-input-inline">
                         <select id="type" name='type'>
-                            <option value="01">java</option>
-                            <option value="02">delphi</option>
                         </select>
                     </div>
                     <label class="layui-form-label" style="width:60px">名称</label>
@@ -45,18 +43,21 @@
     </script>
 
     <!--行工具栏-->
-    <script type="text/html" id="barDemo">
-        <a class='layui-btn layui-btn-xs layui-btn-danger' lay-event='pull'>领取</a>
-        <a class='layui-btn layui-btn-xs' lay-event='edit'>详细信息</a>
+    <script type="text/html" id="barData">
+        <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
+        <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
     </script>
 
+    <script type="text/html" id="temptypeTpl">
+        {{d.name}}
+     </script>
 
     <script src="/ui/layui/layui.js"></script>
     <script>
         layui.extend({
             index: '{/}/ui/layui/core/index', //核心模块
             exd: '{/}/ui/layui/extends/extend' //扩展模块
-        }).use(['layer', 'table', 'jquery', 'form', 'index','exd'], function () {
+        }).use(['layer', 'table', 'jquery', 'form', 'index', 'exd'], function () {
             var $ = layui.jquery,
                 layer = layui.layer,
                 table = layui.table,
@@ -64,6 +65,8 @@
                 admin = layui.admin,
                 config = layui.setter,
                 global = layui.global;
+            debugger
+            var x = layui;
             // config = layui.thread,
             // jutil = layui.jutil,
             // global = layui.global,
@@ -71,6 +74,8 @@
             // laydate = layui.laydate;
             debugger
             //***1.变量定义***
+            var url = config.datamanage.url; //后端请求地址
+
             //***2.方法定义***
             var active = {
                 //1.表格加载
@@ -83,7 +88,7 @@
 
                         //(2)异步请求
                         method: 'post',
-                        url: 'http://127.0.0.1:2000/data/query',
+                        url: url + 'data/query',
                         contentType: "application/json",
                         where: {},
                         page: true,
@@ -104,10 +109,11 @@
                         cols: [[
                             { type: 'checkbox' },
                             { field: 'jlbh', title: '记录编号', hide: true },
-                            { field: 'type', title: '类别' },
+                            { field: 'type', title: '类别',templet:'#temptypeTpl' },
                             { field: 'name', title: '名称' },
                             { field: 'content', title: '内容' },
-                            { field: 'createTime', title: '登记时间' }
+                            { field: 'createTime', title: '登记时间' },
+                            { title: '操作', toolbar: '#barData' }
                             // { field: 'lx', title: '线索类型', templet: '<div> {{# var fn = ' + dictpl.render('协破线索类型') + ' }} {{ fn(d.lx) }} </div>' },
                             // { field: 'zt', title: '线索状态', templet: '<div> {{# var fn = ' + dictpl.render('协破线索状态') + ' }} {{ fn(d.zt) }} </div>' },
                             // { field: 'xszt', title: '线索主题' },
@@ -135,109 +141,58 @@
                 //3.页面初始化
                 pageInit: function () {
                     //(1)字典初始化(查询条件)
-                    global.pickDic({ lx: '协破线索类型', zt: '协破线索状态' });
-                    //(2)时间初始化
-                    laydate.render({
-                        elem: '#djsj',
-                        type: 'month',
-                        format: 'yyyyMM',
-                        theme: 'grid'
-                    })
+                    global.pickDic({type: '资料类型'});
+                    // //(2)时间初始化
+                    // laydate.render({
+                    //     elem: '#djsj',
+                    //     type: 'month',
+                    //     format: 'yyyyMM',
+                    //     theme: 'grid'
+                    // })
 
-                },
-
-                //4.线索领取
-                threadPull: function (sIndex, sThread) {
-                    var sParam = {};
-                    sParam.url = 'pull/add';
-                    sParam.method = 'post';
-                    sParam.entity = active.getThreadPullEntity(sThread);
-                    sParam.callback = function () {
-                        layer.msg('领取成功', { icon: 1 });
-                        layer.close(sIndex);
-                        active.tableRelaod({}); //刷新数据集
-                        var temp = 'pull&1';
-                        active.returnToJZ(temp); //线索领取成功返回给警综
-                        return;
-                    }
-                    global.commonAdd(sParam);
-                },
-
-                //5.线索领取entity
-                getThreadPullEntity: function (sThread) {
-                    debugger
-                    var sDate = new Date();
-                    var entity = {};
-                    entity.xsbh = sThread.jlbh; //线索编号
-                    entity.lqdw = gParam.djdw; //领取单位
-                    entity.lqdwmc = gParam.djdwmc; //领取单位名称
-                    entity.lqr = gParam.djr; //领取人
-                    entity.lqrxm = gParam.djrxm; //领取人姓名
-                    entity.lqrq = sDate.Format('yyyyMMdd'); //领取日期
-                    entity.yxqx = global.dateCompute(sDate, 15); //有效期限
-                    entity.zt = '01'; //状态(默认有效)
-                    //时间戳
-                    entity.djsj = sDate.Format('yyyyMMddhhmmss'); //登记时间
-                    entity.djdw = gParam.djdw; //登记单位
-                    entity.djdwmc = gParam.djdwmc; //登记单位名称
-                    entity.djr = gParam.djr; //登记人
-                    entity.djrxm = gParam.djrxm; //登记人姓名
-                    entity.xgsj = sDate.Format('yyyyMMddhhmmss'); //修改时间
-                    entity.xgdw = gParam.djdw; //修改单位
-                    entity.xgdwmc = gParam.djdwmc; //修改单位名称
-                    entity.xgr = gParam.djr; //修改人
-                    entity.xgrxm = gParam.djrxm; //修改人姓名
-                    return entity;
                 }
             }
 
 
             //******3.初始化******
             active.tableInit(); //表格初始化
-            // active.pageInit(); //查询字典初始化
+            active.pageInit(); //查询字典初始化
 
 
             //******4.事件监听******
             //1.监听行工具栏
             table.on('tool(table-dataTable)', function (obj) {
+                debugger
                 var sEvent = obj.event;
-                if (sEvent == 'pull') {
-                    alert('1111')
-                    debugger
-                    //ajax调用后台服务
-                    $.ajax({
-                        //1.请求地址和格式
-                        url: 'http://127.0.0.1:2000/test/query',
-                        method: 'post', //请求方法
-                        async: true, //是否异步
-                        dataType: 'json', //预期服务器返回数据的类型
-                        //2.请求头和请求体
-                        headers: { 'Content-Type': 'application/json;charset=utf8' },
-                        data: JSON.stringify({ xh: '4' }), //讲js对象序列化
-                        //3.回调函数
-                        success: function (obj) {
-                            alert('222')
-                        }
-                    })
+                if (sEvent == 'edit') {
+                    var sparam = {};
+                    sparam.title = '知识库登记'; //标题
+                    sparam.width = '1200px'; //宽度
+                    sparam.height = '680px'; //高度
+                    sparam.id = 'datamanage'; //内容div的id
+                    sparam.view = '../view'; //加载的页面路径
+                    sparam.data = obj.data; //传入弹出层的参数
+                    sparam.button = 'form-submit-unit'; //按钮
+                    global.pop(sparam);
                 }
 
             })
 
             //2.监听头工具栏
             table.on('toolbar(table-dataTable)', function (obj) {
-                var checkStatus = table.checkStatus(obj.config.id);
+                // var checkStatus = table.checkStatus(obj.config.id);
                 switch (obj.event) {
                     case 'insert':
-                       var sparam = {};
-                       sparam.title = '知识库登记'; //标题
-                       sparam.width = '1200px'; //宽度
-                       sparam.height = '680px'; //高度
-                       sparam.id = 'datamanage'; //内容div的id
-                       sparam.view = '../view'; //加载的页面路径
-                       sparam.data = {}; //传入弹出层的参数
-                       sparam.button = 'form-submit-unit'; //按钮
-                       global.pop(sparam);
-                       break;
+                        var sparam = {};
+                        sparam.title = '知识库登记'; //标题
+                        sparam.width = '1200px'; //宽度
+                        sparam.height = '680px'; //高度
+                        sparam.id = 'datamanage'; //内容div的id
+                        sparam.view = '../view'; //加载的页面路径
+                        sparam.data = {}; //传入弹出层的参数
+                        sparam.button = 'form-submit-unit'; //按钮
+                        global.pop(sparam);
+                        break;
                 };
             })
 
@@ -248,9 +203,9 @@
 
             //3.清空
             form.on('submit(clear)', function (data) {
-                var temp = jutil.empty(data.field);
-                form.val('query-threadTable', temp);
-                active.tableRelaod(temp);
+                var sCondition = layui.jutil.empty(data.field);
+                form.val("query-datadTable", sCondition);
+                active.tableRelaod(sCondition);
             })
         });
     </script>
