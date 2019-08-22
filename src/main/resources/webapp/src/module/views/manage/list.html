@@ -22,10 +22,8 @@
                     <div class="layui-input-inline">
                         <input type="text" class="layui-input" name='name'>
                     </div>
-                    <button lay-submit lay-filter='query' class="layui-btn layui-btn-radius layui-btn-sm btn_query"> <i
-                            class="layui-icon">&#xe615</i>查询</button>
-                    <button lay-submit lay-filter='clear' class="layui-btn layui-btn-radius layui-btn-sm btn_query"> <i
-                            class="layui-icon">&#xe669</i>清空</button>
+                    <button lay-submit lay-filter='query' class="layui-btn" style="margin-bottom: 5px">查询</button>
+                    <button lay-submit lay-filter='clear' class="layui-btn" style="margin-bottom: 5px">清空</button>
                 </div>
             </div>
             <!--表格显示-->
@@ -48,9 +46,6 @@
         <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
     </script>
 
-    <script type="text/html" id="temptypeTpl">
-        {{d.name}}
-     </script>
 
     <script src="/ui/layui/layui.js"></script>
     <script>
@@ -64,14 +59,8 @@
                 form = layui.form,
                 admin = layui.admin,
                 config = layui.setter,
-                global = layui.global;
-            debugger
-            var x = layui;
-            // config = layui.thread,
-            // jutil = layui.jutil,
-            // global = layui.global,
-            // dictpl = layui.dictpl,
-            // laydate = layui.laydate;
+                global = layui.global,
+                dictpl = layui.dictpl;
             debugger
             //***1.变量定义***
             var url = config.datamanage.url; //后端请求地址
@@ -109,21 +98,11 @@
                         cols: [[
                             { type: 'checkbox' },
                             { field: 'jlbh', title: '记录编号', hide: true },
-                            { field: 'type', title: '类别',templet:'#temptypeTpl' },
+                            { field: 'type', title: '类别', templet: '<div> {{# var fn = ' + dictpl.render('资料类型') + ' }} {{ fn(d.type) }} </div>' },
                             { field: 'name', title: '名称' },
                             { field: 'content', title: '内容' },
                             { field: 'createTime', title: '登记时间' },
                             { title: '操作', toolbar: '#barData' }
-                            // { field: 'lx', title: '线索类型', templet: '<div> {{# var fn = ' + dictpl.render('协破线索类型') + ' }} {{ fn(d.lx) }} </div>' },
-                            // { field: 'zt', title: '线索状态', templet: '<div> {{# var fn = ' + dictpl.render('协破线索状态') + ' }} {{ fn(d.zt) }} </div>' },
-                            // { field: 'xszt', title: '线索主题' },
-                            // { field: 'jgmjxm', title: '责任民警' },
-                            // { field: 'tqczdwmc', title: '查证(配侦)单位' },
-                            // { field: 'tqczrxm', title: '查证(配侦)人' },
-                            // { field: 'tqczqx', title: '查证(配侦)期限', templet: '<div> {{# var fn = ' + dictpl.render('协破查证期限') + ' }} {{ fn(d.tqczqx) }} </div>' },
-                            // { field: 'tqczdqrq', title: '到期日期' },
-                            // { field: 'djsj', title: '登记时间' },
-                            // { fixed: 'right', title: '操作', toolbar: '#barDemo', width: 150 }
                         ]],
                     })
                 },
@@ -140,16 +119,20 @@
 
                 //3.页面初始化
                 pageInit: function () {
-                    //(1)字典初始化(查询条件)
-                    global.pickDic({type: '资料类型'});
-                    // //(2)时间初始化
-                    // laydate.render({
-                    //     elem: '#djsj',
-                    //     type: 'month',
-                    //     format: 'yyyyMM',
-                    //     theme: 'grid'
-                    // })
+                    global.pickDic({ type: '资料类型' }); //字典初始化
+                },
 
+                //4.登记修改
+                pop: function (data) {
+                    var sparam = {};
+                    sparam.title = '知识库登记'; //标题
+                    sparam.width = '1200px'; //宽度
+                    sparam.height = '680px'; //高度
+                    sparam.id = 'datamanage'; //内容div的id
+                    sparam.view = '../view'; //加载的页面路径
+                    sparam.data = data; //传入弹出层的参数
+                    sparam.button = 'form-submit-unit'; //按钮
+                    global.pop(sparam);
                 }
             }
 
@@ -162,18 +145,16 @@
             //******4.事件监听******
             //1.监听行工具栏
             table.on('tool(table-dataTable)', function (obj) {
-                debugger
                 var sEvent = obj.event;
                 if (sEvent == 'edit') {
+                    active.pop(obj.data);
+                } else if (sEvent == 'del') {
+                    debugger
                     var sparam = {};
-                    sparam.title = '知识库登记'; //标题
-                    sparam.width = '1200px'; //宽度
-                    sparam.height = '680px'; //高度
-                    sparam.id = 'datamanage'; //内容div的id
-                    sparam.view = '../view'; //加载的页面路径
-                    sparam.data = obj.data; //传入弹出层的参数
-                    sparam.button = 'form-submit-unit'; //按钮
-                    global.pop(sparam);
+                    sparam.url = 'data/del',
+                    sparam.method = 'post',
+                    sparam.entity = {jlbh:obj.data.jlbh};
+                    global.commonDel(sparam);
                 }
 
             })
@@ -183,16 +164,7 @@
                 // var checkStatus = table.checkStatus(obj.config.id);
                 switch (obj.event) {
                     case 'insert':
-                        var sparam = {};
-                        sparam.title = '知识库登记'; //标题
-                        sparam.width = '1200px'; //宽度
-                        sparam.height = '680px'; //高度
-                        sparam.id = 'datamanage'; //内容div的id
-                        sparam.view = '../view'; //加载的页面路径
-                        sparam.data = {}; //传入弹出层的参数
-                        sparam.button = 'form-submit-unit'; //按钮
-                        global.pop(sparam);
-                        break;
+                        active.pop({});
                 };
             })
 

@@ -1,10 +1,10 @@
 package nist.module.datamanage.controller;
 
 import nist.module.datamanage.entity.DataEntity;
-import nist.module.datamanage.entity.TestEntity;
 import nist.module.datamanage.service.DataService;
 import nist.module.datamanage.util.ResponseUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -30,5 +30,11 @@ public class DataController {
     public String save(@RequestBody DataEntity dataEntity){
         DataEntity dataEntity1 = dataService.save(dataEntity);
         return ResponseUtil.writer("0","success",dataEntity1);
+    }
+
+    @RequestMapping(value = "/del", method = {RequestMethod.GET, RequestMethod.POST})
+    public String delete(@RequestBody DataEntity dataEntity){
+        dataService.delete(dataEntity);
+        return ResponseUtil.writer("0","success");
     }
 }

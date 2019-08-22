@@ -75,6 +75,7 @@ layui.define(['layer', 'jquery', 'table', 'setter'], function (exports) {
 
         //4.删除
         commonDel: function (param) {
+            debugger
             $.ajax({
                 url: config.datamanage.url + param.url,
                 method: param.method,
@@ -82,6 +83,7 @@ layui.define(['layer', 'jquery', 'table', 'setter'], function (exports) {
                 data: JSON.stringify(param.entity),
                 dataType: 'json',
                 success: function (obj) {
+                    alert('111')
                     if (typeof (param.callback) == 'function') {
                         param.callback();
                     }

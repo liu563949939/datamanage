@@ -4,7 +4,7 @@ layui.define([], function (exports) {
         //1.根据字典名称返回字典模板
         render: function (dicName) {
             switch (dicName) {
-                case '协破线索类型':
+                case '资料类型':
                     return dictpl.fun_001;
                 case '协破线索状态':
                     return dictpl.fun_002;
@@ -14,13 +14,60 @@ layui.define([], function (exports) {
         },
 
         //2.函数体
-        //协破线索类型
+        //资料类型
         fun_001: function (value) {
             var str = '';
-            if (value == '01') {
-                str = '查证';
-            } else {
-                str = '配侦';
+            switch (value) {
+                case '01':
+                    str = 'pmis';
+                    break;
+                case '02':
+                    str = 'delphi';
+                    break;
+                case '03':
+                    str = 'txl';
+                    break;
+                case '04':
+                    str = 'java';
+                    break;
+                case '05':
+                    str = 'database';
+                    break;
+                case '06':
+                    str = 'web';
+                    break;
+                case '07':
+                    str = 'oracle';
+                    break;
+                case '08':
+                    str = 'javascript';
+                    break;
+                case '09':
+                    str = 'html';
+                    break;
+                case '10':
+                    str = 'ftp';
+                    break;
+                case '11':
+                    str = 'managesystem';
+                    break;
+                case '12':
+                    str = 'application';
+                    break;
+                case '13':
+                    str = 'linux';
+                    break;
+                case '14':
+                    str = 'ssh';
+                    break;
+                case '15':
+                    str = 'etl';
+                    break;
+                case '99':
+                    str = 'other';
+                    break;
+                default:
+                    str = '未知'
             }
             return str;
         },

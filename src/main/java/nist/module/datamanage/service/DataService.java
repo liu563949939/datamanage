@@ -58,4 +58,9 @@ public class DataService {
     public DataEntity save(DataEntity dataEntity){
         return dataRepository.save(dataEntity);
     }
+
+    //3.delete方法
+    public void delete(DataEntity dataEntity){
+        dataRepository.delete(dataEntity);
+    }
 }
