@@ -46,7 +46,7 @@
                 <!-- 左侧导航区域（可配合layui已有的垂直导航） -->
                 <ul class="layui-nav layui-nav-tree" lay-filter="nav_left">
                     <li class="layui-nav-item layui-nav-itemed">
-                        <a class="" href="javascript:;">资料体系</a>
+                        <a class="" href="javascript:;">资料库</a>
                         <dl class="layui-nav-child">
                             <dd><a href="javascript:;" data-url="menu1.html" data-id='1' data-text="后台菜单">资料查询</a></dd>
                             <dd><a href="javascript:;">列表二</a></dd>
@@ -55,18 +55,19 @@
                         </dl>
                     </li>
                     <li class="layui-nav-item">
-                        <a href="javascript:;">解决方案</a>
+                        <a href="javascript:;">统一认证</a>
                         <dl class="layui-nav-child">
-                            <dd><a href="javascript:;">列表一</a></dd>
-                            <dd><a href="javascript:;">列表二</a></dd>
-                            <dd><a href="">超链接</a></dd>
+                            <dd><a href="javascript:;">用户管理</a></dd>
+                            <dd><a href="javascript:;">角色管理</a></dd>
+                            <dd><a href="javascript:;">模块管理</a></dd>
+                            <dd><a href="javascript:;">字典管理</a></dd>
                         </dl>
                     </li>
                 </ul>
             </div>
         </div>
 
-        <div class="layui-body" id = 'body'>
+        <div class="layui-body" id='body'>
             <!-- 内容主体区域 -->
             <!-- <iframe src="./module/views/manage/list.html" width="100%" height="100%" frameborder="0"></iframe> -->
         </div>
@@ -85,14 +86,18 @@
         layui.use(['element'], function () {
             var $ = layui.jquery,
                 element = layui.element;
-
+            debugger
             //4.事件监听
             element.on('nav(nav_left)', function (elem) {
                 var text = elem.attr('data-text');
-                if(text == '后台菜单'){
-                    $('#body').empty();
-                    $('#body').append('<iframe src="/module/views/manage/list.html" width="100%" height="99%" frameborder="0"></iframe>');
-                } 
+                switch (text) {
+                    case '后台菜单':
+                        $('#body').empty();
+                        $('#body').append('<iframe src="/module/views/manage/list.html" width="100%" height="99%" frameborder="0"></iframe>');
+                        break;
+                    //***系统管理***
+                    case '用户管理'
+                }
             });
 
 

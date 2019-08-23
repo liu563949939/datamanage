@@ -88,36 +88,244 @@
           "title": "s_dic",
           "fields": [
             {
-              "name": "REVISION",
-              "type": "Integer",
+              "name": "jlbh",
+              "type": "primary key",
               "remark": "",
-              "chnname": "乐观锁"
+              "chnname": "字典记录编号"
             },
             {
-              "name": "CREATED_BY",
-              "type": "IdOrKey",
+              "name": "name",
+              "type": "ShortString",
               "remark": "",
-              "chnname": "创建人"
+              "chnname": "字典名"
             },
             {
-              "name": "CREATED_TIME",
-              "type": "DateTime",
+              "name": "code",
+              "type": "ShortString",
               "remark": "",
-              "chnname": "创建时间"
+              "chnname": "字典码"
             },
             {
-              "name": "UPDATED_BY",
-              "type": "IdOrKey",
+              "name": "item",
+              "type": "ShortString",
               "remark": "",
-              "chnname": "更新人"
+              "chnname": "字典项"
             },
             {
-              "name": "UPDATED_TIME",
-              "type": "DateTime",
+              "name": "createTime",
+              "type": "djsj",
               "remark": "",
-              "chnname": "更新时间"
+              "chnname": "字典登记时间"
             }
-          ]
+          ],
+          "indexs": [],
+          "headers": [
+            {
+              "fieldName": "chnname",
+              "relationNoShow": false
+            },
+            {
+              "fieldName": "name",
+              "relationNoShow": false
+            },
+            {
+              "fieldName": "type",
+              "relationNoShow": false
+            },
+            {
+              "fieldName": "dataType",
+              "relationNoShow": true
+            },
+            {
+              "fieldName": "remark",
+              "relationNoShow": true
+            },
+            {
+              "fieldName": "pk",
+              "relationNoShow": false
+            },
+            {
+              "fieldName": "notNull",
+              "relationNoShow": true
+            },
+            {
+              "fieldName": "autoIncrement",
+              "relationNoShow": true
+            },
+            {
+              "fieldName": "defaultValue",
+              "relationNoShow": true
+            },
+            {
+              "fieldName": "relationNoShow",
+              "relationNoShow": true
+            }
+          ],
+          "chnname": "系统字典表"
+        },
+        {
+          "title": "s_user",
+          "fields": [
+            {
+              "name": "jlbh",
+              "type": "primary key",
+              "remark": "",
+              "chnname": "用户编号"
+            },
+            {
+              "name": "name",
+              "type": "ShortString",
+              "remark": "",
+              "chnname": "用户姓名"
+            },
+            {
+              "name": "username",
+              "type": "ShortString",
+              "remark": "",
+              "chnname": "用户登录名"
+            },
+            {
+              "name": "password",
+              "type": "ShortString",
+              "remark": "",
+              "chnname": "用户登录密码"
+            },
+            {
+              "name": "unitId",
+              "type": "foreign key",
+              "remark": "",
+              "chnname": "用户单位编号"
+            },
+            {
+              "name": "unitCode",
+              "type": "foreign key",
+              "remark": "",
+              "chnname": "用户单位编码"
+            },
+            {
+              "name": "createTime",
+              "type": "djsj",
+              "remark": "",
+              "chnname": "用户登记时间"
+            }
+          ],
+          "indexs": [],
+          "headers": [
+            {
+              "fieldName": "chnname",
+              "relationNoShow": false
+            },
+            {
+              "fieldName": "name",
+              "relationNoShow": false
+            },
+            {
+              "fieldName": "type",
+              "relationNoShow": false
+            },
+            {
+              "fieldName": "dataType",
+              "relationNoShow": true
+            },
+            {
+              "fieldName": "remark",
+              "relationNoShow": true
+            },
+            {
+              "fieldName": "pk",
+              "relationNoShow": false
+            },
+            {
+              "fieldName": "notNull",
+              "relationNoShow": true
+            },
+            {
+              "fieldName": "autoIncrement",
+              "relationNoShow": true
+            },
+            {
+              "fieldName": "defaultValue",
+              "relationNoShow": true
+            },
+            {
+              "fieldName": "relationNoShow",
+              "relationNoShow": true
+            }
+          ],
+          "chnname": "用户表"
+        },
+        {
+          "title": "s_user_role",
+          "fields": [
+            {
+              "name": "jlbh",
+              "type": "primary key",
+              "remark": "",
+              "chnname": "用户角色记录编号"
+            },
+            {
+              "name": "userId",
+              "type": "foreign key",
+              "remark": "",
+              "chnname": "用户角色用户编号"
+            },
+            {
+              "name": "roleId",
+              "type": "foreign key",
+              "remark": "",
+              "chnname": "用户角色角色编号"
+            },
+            {
+              "name": "createTime",
+              "type": "djsj",
+              "remark": "",
+              "chnname": "用户角色登记时间"
+            }
+          ],
+          "indexs": [],
+          "headers": [
+            {
+              "fieldName": "chnname",
+              "relationNoShow": false
+            },
+            {
+              "fieldName": "name",
+              "relationNoShow": false
+            },
+            {
+              "fieldName": "type",
+              "relationNoShow": false
+            },
+            {
+              "fieldName": "dataType",
+              "relationNoShow": true
+            },
+            {
+              "fieldName": "remark",
+              "relationNoShow": true
+            },
+            {
+              "fieldName": "pk",
+              "relationNoShow": false
+            },
+            {
+              "fieldName": "notNull",
+              "relationNoShow": true
+            },
+            {
+              "fieldName": "autoIncrement",
+              "relationNoShow": true
+            },
+            {
+              "fieldName": "defaultValue",
+              "relationNoShow": true
+            },
+            {
+              "fieldName": "relationNoShow",
+              "relationNoShow": true
+            }
+          ],
+          "chnname": "用户关联角色表"
         }
       ],
       "graphCanvas": {
@@ -146,6 +354,21 @@
       {
         "code": "primary key",
         "name": "主键",
+        "apply": {
+          "MYSQL": {
+            "type": "VARCHAR(32)"
+          },
+          "ORACLE": {
+            "type": "VARCHAR2(32)"
+          },
+          "JAVA": {
+            "type": "String"
+          }
+        }
+      },
+      {
+        "code": "foreign key",
+        "name": "关联编号",
         "apply": {
           "MYSQL": {
             "type": "VARCHAR(32)"
