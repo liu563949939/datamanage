@@ -154,8 +154,8 @@ layui.define(['laytpl', 'layer', 'element', 'util'], function (exports) {
         },
         //项目配置
         datamanage:{
-            // url: "http://127.0.0.1:2000/",
-            url: "http://192.168.2.140:2000/",
+            url: "http://127.0.0.1:2000/",
+            // url: "http://192.168.2.140:2000/",
             name: "资料管理系统",
             copyright: "南京公安研究院",
         }
