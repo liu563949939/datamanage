@@ -18,7 +18,7 @@ layui.define(['layer', 'jquery', 'table', 'setter'], function (exports) {
                 //1.请求地址和格式
                 url: config.datamanage.url + param.url,
                 method: 'post', //请求方法
-                async: false, //是否异步
+                async: true, //是否异步
                 dataType: 'json', //预期服务器返回数据的类型
                 //2.请求头和请求体
                 headers: { 'Content-Type': 'application/json;charset=utf8' },
@@ -40,7 +40,7 @@ layui.define(['layer', 'jquery', 'table', 'setter'], function (exports) {
                 //1.请求地址和格式
                 url: config.datamanage.url + param.url,
                 method: param.method,
-                async: true, //是否异步
+                async: false, //是否异步
                 dataType: 'json',
                 //2.请求头和请求体
                 headers: { 'Content-Type': 'application/json;charset=utf8' },
@@ -83,7 +83,6 @@ layui.define(['layer', 'jquery', 'table', 'setter'], function (exports) {
                 data: JSON.stringify(param.entity),
                 dataType: 'json',
                 success: function (obj) {
-                    alert('111')
                     if (typeof (param.callback) == 'function') {
                         param.callback();
                     }
@@ -167,7 +166,8 @@ layui.define(['layer', 'jquery', 'table', 'setter'], function (exports) {
         //***(4)admin弹出层***
         pop: function (param) {
             debugger
-            var id = param.id; //内容div的id
+            var id = param.id, //内容div的id
+                url = param.url, //url
                 i = param.data; //传入弹出层的参数(让子窗体绑定数据集)
             admin.popup({
                 title: param.title, //标题
@@ -181,13 +181,13 @@ layui.define(['layer', 'jquery', 'table', 'setter'], function (exports) {
                             debugger
                             //ajax请求提交数据
                             sparam = {};
-                            sparam.url = 'data/save';
+                            sparam.url = url;
                             sparam.method = 'post';
                             sparam.entity = data.field;
-                            obj.commonAdd(sparam);
                             sparam.callback = function () {
                                 layui.layer.close(index); //关闭弹层
                             }
+                            obj.commonAdd(sparam);
 
                         });
                     });
