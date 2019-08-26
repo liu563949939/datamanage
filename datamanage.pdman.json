@@ -326,6 +326,79 @@
             }
           ],
           "chnname": "用户关联角色表"
+        },
+        {
+          "title": "s_role",
+          "fields": [
+            {
+              "name": "jlbh",
+              "type": "primary key",
+              "remark": "",
+              "chnname": "角色记录编号"
+            },
+            {
+              "name": "parentId",
+              "type": "foreign key",
+              "remark": "",
+              "chnname": "角色父编号"
+            },
+            {
+              "name": "name",
+              "type": "ShortString",
+              "remark": "",
+              "chnname": "角色名称"
+            },
+            {
+              "name": "createTime",
+              "type": "djsj",
+              "remark": "",
+              "chnname": "角色登记时间"
+            }
+          ],
+          "indexs": [],
+          "headers": [
+            {
+              "fieldName": "chnname",
+              "relationNoShow": false
+            },
+            {
+              "fieldName": "name",
+              "relationNoShow": false
+            },
+            {
+              "fieldName": "type",
+              "relationNoShow": false
+            },
+            {
+              "fieldName": "dataType",
+              "relationNoShow": true
+            },
+            {
+              "fieldName": "remark",
+              "relationNoShow": true
+            },
+            {
+              "fieldName": "pk",
+              "relationNoShow": false
+            },
+            {
+              "fieldName": "notNull",
+              "relationNoShow": true
+            },
+            {
+              "fieldName": "autoIncrement",
+              "relationNoShow": true
+            },
+            {
+              "fieldName": "defaultValue",
+              "relationNoShow": true
+            },
+            {
+              "fieldName": "relationNoShow",
+              "relationNoShow": true
+            }
+          ],
+          "chnname": "角色表"
         }
       ],
       "graphCanvas": {
