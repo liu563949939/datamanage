@@ -6,6 +6,7 @@ import nist.module.datamanage.service.DataService;
 import nist.module.datamanage.service.RoleServcie;
 import nist.module.datamanage.util.ResponseUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -22,7 +23,9 @@ public class RoleController {
     private RoleServcie roleServcie;
 
     @RequestMapping(value = "/query", method = {RequestMethod.GET, RequestMethod.POST})
-    public String test(@RequestBody RoleEntity roleEntity){
+//    public String test(@RequestBody RoleEntity roleEntity){
+    public String test(@Param("name") String name){
+        RoleEntity roleEntity = new RoleEntity();
         Map<String,Object> result = roleServcie.getDataList(roleEntity);
         return ResponseUtil.writer("0","success",result.get("dataList"),(Long) result.get("count"));
     }

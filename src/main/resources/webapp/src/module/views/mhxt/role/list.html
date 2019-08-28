@@ -10,11 +10,42 @@
 </head>
 
 <body>
+    <!--左边角色树-->
     <div id='role' style="width:20%;float: left;background-color: #f2f2f2">
         <ul id="dtreeRole" class="dtree" data-id="0" style="width:90%;"></ul>
     </div>
+    <!--右侧操作区-->
     <div id='roleUser' style="width:80%;float:right">
-        <div class="layui-tab">
+        <!--上操作区-->
+        <div style="height:15%">
+            <form class='layui-form' style="height: 100%">
+                <div class="layui-form-item">
+                    <div class="layui-input-block" style="margin-top: 10px">
+                        <button type="button" lay-submit class="layui-btn layui-btn-radius layui-btn-sm"
+                            lay-filter='add'>添加角色</button>
+                        <button type="button" lay-submit class="layui-btn layui-btn-radius layui-btn-sm"
+                            lay-filter='add_user'>关联用户</button>
+                        <button type="button" lay-submit class="layui-btn layui-btn-radius layui-btn-sm"
+                            lay-filter='add_module'>关联资源</button>
+                    </div>
+                </div>
+                <!--角色名称和创建时间-->
+                <div class="layui-form-item">
+                    <label class="layui-form-label"><span style="color: red;">*</span>角色ID</label>
+                    <div class="layui-input-inline">
+                        <input type="text" id="jlbh" name="jlbh" placeholder="请输入角色ID" autocomplete="off"
+                            class="layui-input">
+                    </div>
+                    <label class="layui-form-label"><span style="color: red;">*</span>角色名称</label>
+                    <div class="layui-input-inline">
+                        <input type="text" id="name" name="name" placeholder="请输入角色名称" autocomplete="off"
+                            class="layui-input">
+                    </div>
+                </div>
+            </form>
+        </div>
+        <!--下操作区-->
+        <div class="layui-tab" style="height:85%">
             <ul class="layui-tab-title">
                 <li class="layui-this">关联用户</li>
                 <li>关联资源</li>
@@ -64,6 +95,46 @@
 
             //***2.方法定义***
             var active = {
+                //1.角色-加载树
+                roleTreeInit: function () {
+                    dtree.render({
+                        //1.基本设置
+                        elem: "#dtreeRole",
+                        method: 'post',
+                        url: url + 'role/query', // 使用url加载（可与data加载同时存在）
+                        //2.异步设置
+                        dataStyle: 'layuiStyle', //配置layui风格的数据格式
+                        dataFormat: "list", //配置data风格为list
+                        checkbar: true, //复选框
+                        request: {},
+                        response: { statusName: "code", statusCode: 0, message: 'msg', treeId: "jlbh", parentId: 'parentId', title: 'name' },
+
+                        //3.显示设置
+                        ficon: [1, -1],
+                        icon: 7,
+
+                        //4.回调函数
+                        done: function (res, $obj) {
+                            debugger
+                        }
+
+                    });
+                },
+                //2.角色-登记修改
+                pop: function (data) {
+                    var sparam = {};
+                    sparam.title = '角色登记'; //标题
+                    sparam.width = '1200px'; //宽度
+                    sparam.height = '680px'; //高度
+                    sparam.id = 'role'; //内容div的id
+                    sparam.view = '../view'; //加载的页面路径
+                    sparam.url = 'role/save';
+                    sparam.data = data; //传入弹出层的参数
+                    sparam.button = 'form-submit-unit'; //按钮
+                    global.pop(sparam);
+                },
+
+                //以下没有用
                 //1.表格加载
                 tableInit: function () {
                     table.render({
@@ -135,24 +206,27 @@
             debugger
             //******3.初始化******
             // active.tableInit(); //表格初始化
-            // 初始化树
-            dtree.render({
-                elem: "#dtreeRole",
-                method: 'post',
-                dataStyle: 'layuiStyle', //配置layui风格的数据格式
-                dataFormat: "list", //配置data风格为list
-                url: url + 'role/query', // 使用url加载（可与data加载同时存在）
-                checkbar:true, //复选框
-                request: {name:'111'},
-                response:{message:"msg",statusCode:0,treeId:"id",title:'title1'}
-
-            });
+            active.roleTreeInit(); // 初始化树
 
             $('#role').css({ height: '800px', background: '#f8f8f8' });
             $('#roleUser').css({ height: '800px', background: '#f8f8f8' });
 
 
             //******4.事件监听******
+            //1.监听角色树节点
+            dtree.on("node('dtreeRole')", function (obj) {
+                var param = obj.param;
+                $('#jlbh').val(param.nodeId); //记录编号
+                $('#name').val(param.context); //角色名称
+            });
+
+            //2.监听按钮
+            form.on('submit(add)', function (data) {
+                debugger
+                var param = {};
+                param.parentId = data.field.jlbh; //父编号
+            })
+
             //1.监听行工具栏
             table.on('tool(table-userTable)', function (obj) {
                 var sEvent = obj.event;
@@ -191,10 +265,7 @@
                 };
             })
 
-            //3.查询
-            form.on('submit(query)', function (data) {
-                active.tableRelaod(data.field);
-            })
+
 
             //4.清空
             form.on('submit(clear)', function (data) {

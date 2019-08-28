@@ -188,7 +188,6 @@ layui.define(['layer', 'jquery', 'table', 'setter'], function (exports) {
                                 layui.layer.close(index); //关闭弹层
                             }
                             obj.commonAdd(sparam);
-
                         });
                     });
                 }

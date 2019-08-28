@@ -23,8 +23,8 @@ public class RoleServcie {
     public Map<String,Object> getDataList(RoleEntity roleEntity){
         Map<String,Object> sFhz = new HashMap<String,Object>();
         //1.获得条件
-        StringBuilder sCondition = new StringBuilder("select * from s_user where 1 = 1");
-        StringBuilder sConditionCount = new StringBuilder("select count(*) from s_user where 1 = 1");
+        StringBuilder sCondition = new StringBuilder("select * from s_role where 1 = 1");
+        StringBuilder sConditionCount = new StringBuilder("select count(*) from s_role where 1 = 1");
 /*        //2.条件处理
         if(roleEntity.getType() != null && !roleEntity.getType().equals("")){
             sCondition.append(" and type = " + roleEntity.getType());
