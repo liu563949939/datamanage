@@ -1,0 +1,67 @@
+{
+    "code":0,
+    "msg":"操作成功",
+    "data": [
+        {
+            "id": "001",
+            "title1": "湖南省",
+            "checkArr": "1",
+            "parentId": "0"
+        },
+        {
+            "id": "002",
+            "title1": "湖北省",
+            "checkArr": "1",
+            "parentId": "0"
+        },
+        {
+            "id": "003",
+            "title1": "广东省",
+            "checkArr": "0",
+            "parentId": "0"
+        },
+        {
+            "id": "004",
+            "title1": "浙江省",
+            "checkArr": "0",
+            "parentId": "0"
+        },
+        {
+            "id": "005",
+            "title1": "福建省",
+            "checkArr": "0",
+            "parentId": "0"
+        },
+        {
+            "id": "001001",
+            "title1": "长沙市",
+            "checkArr": "1",
+            "parentId": "001"
+        },
+        {
+            "id": "001002",
+            "title1": "株洲市",
+            "checkArr": "0",
+            "parentId": "001"
+        },
+        {
+            "id": "001003",
+            "title1": "湘潭市",
+            "checkArr": "0",
+            "parentId": "001"
+        },
+        {
+            "id": "001004",
+            "title1": "衡阳市",
+            "checkArr": "0",
+            "parentId": "001"
+        },
+        {
+            "id": "001005",
+            "title1": "郴州市",
+            "checkArr": "0",
+            "iconClass": "dtree-icon-caidan_xunzhang",
+            "parentId": "001"
+        }
+    ]
+}
