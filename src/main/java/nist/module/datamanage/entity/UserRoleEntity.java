@@ -8,14 +8,14 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 @Entity
-@Table(name = "s_role")
-public class RoleEntity extends PageEntity{
+@Table(name = "s_user_role")
+public class UserRoleEntity {
     @GeneratedValue(generator = "system-uuid")
     @GenericGenerator(name = "system-uuid",strategy = "uuid")
     @Id
     private String jlbh;
-    private String parentId;
-    private String name;
+    private String userId;
+    private String roleId;
     private String createTime;
 
     public String getJlbh() {
@@ -26,20 +26,20 @@ public class RoleEntity extends PageEntity{
         this.jlbh = jlbh;
     }
 
-    public String getParentId() {
-        return parentId;
+    public String getUserId() {
+        return userId;
     }
 
-    public void setParentId(String parentId) {
-        this.parentId = parentId;
+    public void setUserId(String userId) {
+        this.userId = userId;
     }
 
-    public String getName() {
-        return name;
+    public String getRoleId() {
+        return roleId;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setRoleId(String roleId) {
+        this.roleId = roleId;
     }
 
     public String getCreateTime() {

@@ -120,13 +120,14 @@
 
                     });
                 },
+
                 //2.角色-登记修改
                 pop: function (data) {
                     var sparam = {};
                     sparam.title = '角色登记'; //标题
                     sparam.width = '1200px'; //宽度
                     sparam.height = '680px'; //高度
-                    sparam.id = 'role'; //内容div的id
+                    sparam.id = 'role1'; //内容div的id
                     sparam.view = '../view'; //加载的页面路径
                     sparam.url = 'role/save';
                     sparam.data = data; //传入弹出层的参数
@@ -186,20 +187,6 @@
                             curr: 1
                         }
                     })
-                },
-
-                //4.登记修改
-                pop: function (data) {
-                    var sparam = {};
-                    sparam.title = '用户登记'; //标题
-                    sparam.width = '1200px'; //宽度
-                    sparam.height = '680px'; //高度
-                    sparam.id = 'user'; //内容div的id
-                    sparam.view = '../view'; //加载的页面路径
-                    sparam.url = 'user/save';
-                    sparam.data = data; //传入弹出层的参数
-                    sparam.button = 'form-submit-unit'; //按钮
-                    global.pop(sparam);
                 }
             }
 
@@ -225,6 +212,8 @@
                 debugger
                 var param = {};
                 param.parentId = data.field.jlbh; //父编号
+                active.pop(param); //登记修改
+
             })
 
             //1.监听行工具栏
