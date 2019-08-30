@@ -14,8 +14,8 @@ public class UserRoleEntity {
     @GenericGenerator(name = "system-uuid",strategy = "uuid")
     @Id
     private String jlbh;
-    private String userId;
     private String roleId;
+    private String userId;
     private String createTime;
 
     public String getJlbh() {
