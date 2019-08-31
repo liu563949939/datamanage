@@ -1,43 +1,55 @@
 <div>
-  <ul id="dtreeUser" class="dtree" data-id="0""></ul>
+  <ul id="dtreeUser" class="dtree" data-id="0"" style=" width: 90%"></ul>
 </div>
 
+<!--动态模板定义-->
+<script type="text/html" template lay-done="layui.data.done(d)">
+</script>
+
 <script>
-  layui.use([], function () {
+  layui.data.done = function (d) {
     debugger
-    var config = layui.setter,
-      dtree = layui.dtree;
+    var sParam = d.params,
+        roleId = sParam.roleId;
+    layui.use([], function () {
+      var config = layui.setter,
+        dtree = layui.dtree;
 
-    //***1.变量定义***
-    var url = config.datamanage.url; //后端请求地址
+      //***1.变量定义***
+      var url = config.datamanage.url; //后端请求地址
 
-    var active = {
-      userTreeInit: function () {
-        dtree.render({
-          //1.基本设置
-          elem: 'dtreeUser',
-          method: 'post',
-          url: url + 'user/query', // 使用url加载（可与data加载同时存在）
-          //2.异步设置
-          dataStyle: 'layuiStyle', //配置layui风格的数据格式
-          dataFormat: 'list', //配置data风格为list
-          checkbar: true, //复选框
-          response: { statusName: 'code', statusCode: 0, message: 'msg', treeIdL: 'jlbh', parentId: 'parentId', title: 'name' },
+      //***2.方法定义***
+      var active = {
+        userTreeInit: function () {
+          dtree.render({
+            //1.基本设置
+            elem: '#dtreeUser',
+            method: 'post',
+            url: url + 'user/queryAll', // 使用url加载（可与data加载同时存在）
+            //2.异步设置
+            dataStyle: 'layuiStyle', //配置layui风格的数据格式
+            dataFormat: 'list', //配置data风格为list
+            request: {roleId:roleId},
+            checkbar: true, //复选框
+            response: { statusName: 'code', statusCode: 0, message: 'msg', treeId: 'jlbh', parentId: 'parentId', title: 'name' },
 
-          //3.显示设置
-          ficon: [1, -1],
-          icon: 7,
+            //3.显示设置
+            ficon: [2, -1],
+            icon: 1,
 
-          //4.回调函数
-          done: function (res, $obj) {
-            debugger
-          }
+            //4.回调函数
+            done: function (res, $obj) {
+              debugger
+            }
 
-        })
+          })
+        }
       }
-    }
+
+      //******3.初始化******
+      active.userTreeInit();
+    })
+  }
 
 
-    active.roleTreeInit();
-  })
 </script>

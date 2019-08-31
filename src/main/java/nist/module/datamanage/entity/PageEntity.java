@@ -1,8 +1,10 @@
 package nist.module.datamanage.entity;
 
-public class PageEntity {
-    private Integer page;
-    private Integer limit;
+import nist.module.datamanage.entity.po.UtilEntity;
+
+public class PageEntity extends UtilEntity {
+    private Integer page; //页数
+    private Integer limit; //每页数量
 
     public Integer getPage() {
         return page;

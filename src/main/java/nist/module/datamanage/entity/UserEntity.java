@@ -14,6 +14,7 @@ public class UserEntity extends PageEntity {
     @GenericGenerator(name = "system-uuid",strategy = "uuid")
     @Id
     private String jlbh;
+    private String parentId;
     private String name;
     private String username;
     private String password;
@@ -75,5 +76,13 @@ public class UserEntity extends PageEntity {
 
     public void setCreateTime(String createTime) {
         this.createTime = createTime;
+    }
+
+    public String getParentId() {
+        return parentId;
+    }
+
+    public void setParentId(String parentId) {
+        this.parentId = parentId;
     }
 }

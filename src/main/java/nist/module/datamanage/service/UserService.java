@@ -61,4 +61,25 @@ public class UserService {
     public void delete(UserEntity userEntity){
         userRepository.delete(userEntity);
     }
+
+    //4.查询所有
+    public List<UserEntity> getDataListAll(UserEntity userEntity){
+        //1.获得条件
+        StringBuilder sCondition = new StringBuilder("select * from s_user where 1 = 1");
+
+        //2.语句执行
+        Query query = entityManager.createNativeQuery(sCondition.toString(),UserEntity.class);
+        List<UserEntity> dataList = query.getResultList(); //查询结果
+
+        //3.判断是否选中(包含角色)
+        for(int i=0;i<dataList.size();i++){
+            dataList.get(i).setCheckArr("0");
+        }
+        //4.结果返回
+        return dataList;
+    }
+
+    //5.判断是否已存在角色
+
+
 }
