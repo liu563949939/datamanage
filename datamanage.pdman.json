@@ -173,6 +173,12 @@
               "chnname": "用户编号"
             },
             {
+              "name": "parentId",
+              "type": "foreign key",
+              "remark": "",
+              "chnname": "用户父编号"
+            },
+            {
               "name": "name",
               "type": "ShortString",
               "remark": "",

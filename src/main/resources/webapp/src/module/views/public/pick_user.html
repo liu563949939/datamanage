@@ -1,98 +1,43 @@
 <div>
-    <div class="layui-fluid">
-        <div class="layui-card">
-            <div class="layui-form layui-card-header layuiadmin-card-header-auto" lay-filter="query-pick-user">
-                <div class="layui-form-item" id="query-pick-user">
-                </div>
-            </div>
-            <div class="layui-card-body">
-              <table class="layui-hide" id="table-pick" lay-filter="table-pick"></table>
-            </div>
-        </div>
-    </div>
-
-
-
-   <script>
-     layui.use(['tablex','form','userauthen','table','jutil'],function(){
-       var form = layui.form,
-           config = layui.userauthen,
-           table = layui.table,
-           jutil = layui.jutil;
-           
-
-      //***变量定义***
-      var tablex_pick_user = new layui.tablex,
-          condition = {type: 'user',field1: '', field2:'', field3: ''}, //查询条件(所属单位、姓名、用户名)
-          area = layui.sessionData(layui.setter.tableName)['unit']; //所属单位
-          if(area != '000000') {
-              condition.field1 = area.substring(0,4); //所属单位
-          }
-          debugger;
-      //***方法定义***
-      var active = {
-        //1.表格初始化
-        tableRender: function (){
-          //1.查询区域
-          var querybar = tablex_pick_user.querybar;
-          querybar.text("姓名", "name");
-          querybar.button("btnQuery", "查询", "&#xe615;", "query1");
-
-          //2.行工具栏
-          var actionbar = tablex_pick_user.actionbar;
-          actionbar.clear();
-          actionbar.add("选择", "select");
-
-          //3.数据列
-          var col = tablex_pick_user.column;
-          col.clear();
-          col.querybar("query-pick-user", querybar.cols); //输出查询区域
-
-          col.checkbox();
-          col.hide('ID', "id");
-          col.text("姓名", "name");
-          col.text("用户名", "userName");
-          col.actionbar("操作", actionbar.cols); //输出操作列
-
-          //3.表格初始化
-          $('#table-pick').table({
-              url: config.url + 'publicQuery/query',
-              method: "post",
-              toolbar: col.tools,
-              defaultToolbar: col.dtools,
-              totalRow: true,
-              height: 'full-250',
-              cols: col.cols,
-              where: condition
-          });
-        },
-
-        //2.表格重载
-        tableReload: function (data) {
-          debugger
-          if(typeof(data) != 'undefined') {
-              condition.field2 = data.name;
-          }
-          table.reload('table-pick', {
-              where: condition,
-              page: {
-                  curr: 1
-              }
-          });
-        }
-      }
-
-
-      //***初始化***
-      active.tableRender();
-
-
-      //***事件监听***
-      //1.查询
-      form.on('submit(query1)',function(obj){
-        active.tableReload(obj.field)
-      })
-
-     })
-   </script>
+  <ul id="dtreeUser" class="dtree" data-id="0""></ul>
 </div>
+
+<script>
+  layui.use([], function () {
+    debugger
+    var config = layui.setter,
+      dtree = layui.dtree;
+
+    //***1.变量定义***
+    var url = config.datamanage.url; //后端请求地址
+
+    var active = {
+      userTreeInit: function () {
+        dtree.render({
+          //1.基本设置
+          elem: 'dtreeUser',
+          method: 'post',
+          url: url + 'user/query', // 使用url加载（可与data加载同时存在）
+          //2.异步设置
+          dataStyle: 'layuiStyle', //配置layui风格的数据格式
+          dataFormat: 'list', //配置data风格为list
+          checkbar: true, //复选框
+          response: { statusName: 'code', statusCode: 0, message: 'msg', treeIdL: 'jlbh', parentId: 'parentId', title: 'name' },
+
+          //3.显示设置
+          ficon: [1, -1],
+          icon: 7,
+
+          //4.回调函数
+          done: function (res, $obj) {
+            debugger
+          }
+
+        })
+      }
+    }
+
+
+    active.roleTreeInit();
+  })
+</script>

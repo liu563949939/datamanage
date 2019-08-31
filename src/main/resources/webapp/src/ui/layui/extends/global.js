@@ -161,6 +161,21 @@ layui.define(['layer', 'jquery', 'table', 'setter'], function (exports) {
             return y;
         },
 
+        //2.得到当前主路径
+        getRootUrl: function () {
+            debugger
+            //获取当前网址，如： http://localhost:8083/uimcardprj/share/meun.jsp
+            var curWwwPath = window.document.location.href;
+            //获取主机地址之后的目录，如： uimcardprj/share/meun.jsp
+            var pathName = window.document.location.pathname;
+            var pos = curWwwPath.indexOf(pathName);
+            //获取主机地址，如： http://localhost:8083
+            var localhostPaht = curWwwPath.substring(0, pos);
+            //获取带"/"的项目名，如：/uimcardprj
+            var projectName = pathName.substring(0, pathName.substr(1).indexOf('/') + 1);
+            return (localhostPaht + projectName);
+        },
+
 
 
         //***(4)admin弹出层***
@@ -172,7 +187,7 @@ layui.define(['layer', 'jquery', 'table', 'setter'], function (exports) {
             admin.popup({
                 title: param.title, //标题
                 area: [param.width, param.height], //宽度和高度
-                id: id, 
+                id: id,
                 success: function (layer, index) {
                     $("#" + id).css('padding', '1px');
                     layui.view(id).render(param.view, i).done(function () {

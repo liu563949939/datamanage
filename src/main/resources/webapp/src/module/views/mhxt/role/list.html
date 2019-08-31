@@ -196,11 +196,11 @@
                 //3.角色关联用户-登记修改
                 pop_roleUser: function (data) {
                     var sparam = {};
-                    sparam.title = '角色登记'; //标题
+                    sparam.title = '角色关联用户'; //标题
                     sparam.width = '1200px'; //宽度
                     sparam.height = '680px'; //高度
-                    sparam.id = 'role1'; //内容div的id
-                    sparam.view = '../view'; //加载的页面路径
+                    sparam.id = 'roleUser1'; //内容div的id
+                    sparam.view = '../../../public/pick_user'; //加载的页面路径
                     sparam.url = 'role/save';
                     sparam.data = data; //传入弹出层的参数
                     sparam.button = 'form-submit-unit'; //按钮
@@ -244,7 +244,7 @@
 
             //2.关联用户
             form.on('submit(add_user)', function (data) {
-                alert('222')
+                active.pop_roleUser({});
             })
 
             //******(3)tab监听******
