@@ -4,7 +4,6 @@ import nist.module.datamanage.entity.DataEntity;
 import nist.module.datamanage.service.DataService;
 import nist.module.datamanage.util.ResponseUtil;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;

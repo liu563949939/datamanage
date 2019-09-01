@@ -41,8 +41,7 @@ public class UserController {
 
     @RequestMapping(value = "/queryAll",method = {RequestMethod.GET, RequestMethod.POST})
     public String queryAll(@Param("roleId") String roleId){
-        UserEntity userEntity = new UserEntity();
-        List<UserEntity>  dataList = userService.getDataListAll(userEntity);
+        List<UserEntity>  dataList = userService.getDataListAll(roleId);
         return ResponseUtil.writer("0","success",dataList);
     }
 
