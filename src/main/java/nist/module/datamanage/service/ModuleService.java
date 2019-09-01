@@ -1,9 +1,8 @@
 package nist.module.datamanage.service;
 
-import nist.module.datamanage.entity.ResourceEntity;
+import nist.module.datamanage.entity.ModuleEntity;
 import nist.module.datamanage.entity.UserEntity;
-import nist.module.datamanage.repository.ResourceRepository;
-import nist.module.datamanage.repository.UserRepository;
+import nist.module.datamanage.repository.ModuleRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -15,27 +14,27 @@ import java.util.List;
 import java.util.Map;
 
 @Service
-public class ResourceService {
+public class ModuleService {
     @Autowired
-    private ResourceRepository resourceRepository;
+    private ModuleRepository moduleRepository;
 
     @PersistenceContext
     private EntityManager entityManager;
 
     //1.query方法
-    public Map<String,Object> getDataList(ResourceEntity resourceEntity){
+    public Map<String,Object> getDataList(ModuleEntity moduleEntity){
         Map<String,Object> sFhz = new HashMap<String,Object>();
         //1.获得条件
         StringBuilder sCondition = new StringBuilder("select * from s_resource where 1 = 1");
         StringBuilder sConditionCount = new StringBuilder("select count(*) from s_resource where 1 = 1");
         //2.条件处理
-        if(resourceEntity.getName() != null && !resourceEntity.getName().equals("")){
-            sCondition.append(" and name like '%" + resourceEntity.getName() + "%'");
-            sConditionCount.append(" and name like '" + resourceEntity.getName() + "'");
+        if(moduleEntity.getName() != null && !moduleEntity.getName().equals("")){
+            sCondition.append(" and name like '%" + moduleEntity.getName() + "%'");
+            sConditionCount.append(" and name like '" + moduleEntity.getName() + "'");
         }
         //3.分页处理
-        Integer iEnd = resourceEntity.getLimit(); //结束
-        Integer iStart = (resourceEntity.getPage()-1)*iEnd; //开始
+        Integer iEnd = moduleEntity.getLimit(); //结束
+        Integer iStart = (moduleEntity.getPage()-1)*iEnd; //开始
         sCondition.append(" limit " + String.valueOf(iStart) + ", " + String.valueOf(iEnd));
         //4.语句执行
         Query query = entityManager.createNativeQuery(sCondition.toString(),UserEntity.class);
@@ -50,13 +49,13 @@ public class ResourceService {
         return sFhz;
     }
 
-//    //2.save方法
-//    public UserEntity save(UserEntity userEntity){
-//        return userRepository.save(userEntity);
-//    }
-//
-//    //3.delete方法
-//    public void delete(UserEntity userEntity){
-//        userRepository.delete(userEntity);
-//    }
+    //2.save方法
+    public ModuleEntity save(ModuleEntity moduleEntity){
+        return moduleRepository.save(moduleEntity);
+    }
+
+    //3.delete方法
+    public void delete(ModuleEntity moduleEntity){
+        moduleRepository.delete(moduleEntity);
+    }
 }

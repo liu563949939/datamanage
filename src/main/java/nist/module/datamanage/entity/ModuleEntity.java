@@ -8,8 +8,8 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 @Entity
-@Table(name = "s_resource")
-public class ResourceEntity extends PageEntity {
+@Table(name = "s_module")
+public class ModuleEntity extends PageEntity {
     @GeneratedValue(generator = "system-uuid")
     @GenericGenerator(name = "system-uuid",strategy = "uuid")
     @Id

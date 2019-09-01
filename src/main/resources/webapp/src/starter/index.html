@@ -59,7 +59,7 @@
                         <dl class="layui-nav-child">
                             <dd><a href="javascript:;" data-text="用户管理">用户管理</a></dd>
                             <dd><a href="javascript:;" data-text="角色管理">角色管理</a></dd>
-                            <dd><a href="javascript:;">模块管理</a></dd>
+                            <dd><a href="javascript:;">资源管理</a></dd>
                             <dd><a href="javascript:;">字典管理</a></dd>
                         </dl>
                     </li>
@@ -105,6 +105,11 @@
                     case '角色管理':
                         $('#body').empty();
                         $('#body').append('<iframe src="/module/views/mhxt/role/list.html" width="100%" height="99%" frameborder="0"></iframe>');
+                        break;
+                    //***资源管理***
+                    case '资源管理':
+                        $('#body').empty();
+                        $('#body').append('<iframe src="/module/views/mhxt/module/list.html" width="100%" height="99%" frameborder="0"></iframe>');
                         break;
                 }
             });
