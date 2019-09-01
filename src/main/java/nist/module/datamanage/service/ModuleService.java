@@ -25,8 +25,8 @@ public class ModuleService {
     public Map<String,Object> getDataList(ModuleEntity moduleEntity){
         Map<String,Object> sFhz = new HashMap<String,Object>();
         //1.获得条件
-        StringBuilder sCondition = new StringBuilder("select * from s_resource where 1 = 1");
-        StringBuilder sConditionCount = new StringBuilder("select count(*) from s_resource where 1 = 1");
+        StringBuilder sCondition = new StringBuilder("select * from s_module where 1 = 1");
+        StringBuilder sConditionCount = new StringBuilder("select count(*) from s_module where 1 = 1");
         //2.条件处理
         if(moduleEntity.getName() != null && !moduleEntity.getName().equals("")){
             sCondition.append(" and name like '%" + moduleEntity.getName() + "%'");

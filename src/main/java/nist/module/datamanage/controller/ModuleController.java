@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import java.util.Map;
 
 @Controller
-@RequestMapping("/resource")
+@RequestMapping("/module")
 @ResponseBody
 public class ModuleController {
 
