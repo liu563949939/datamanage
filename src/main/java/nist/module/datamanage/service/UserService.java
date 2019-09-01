@@ -63,7 +63,7 @@ public class UserService {
     }
 
     //4.查询所有
-    public List<UserEntity> getDataListAll(UserEntity userEntity){
+    public List<UserEntity> getDataListAll(String roleId){
         //1.获得条件
         StringBuilder sCondition = new StringBuilder("select * from s_user where 1 = 1");
 
@@ -73,13 +73,28 @@ public class UserService {
 
         //3.判断是否选中(包含角色)
         for(int i=0;i<dataList.size();i++){
-            dataList.get(i).setCheckArr("0");
+            String sFhz = this.isExists(dataList.get(i).getJlbh(),roleId);
+            if(sFhz == "1"){
+                dataList.get(i).setCheckArr("1");
+            }else{
+                dataList.get(i).setCheckArr("0");
+            }
         }
         //4.结果返回
         return dataList;
     }
 
     //5.判断是否已存在角色
-
+    public String isExists(String userId, String roleId){
+        String sFhz = "0";
+        StringBuilder sConditionCount = new StringBuilder("select count(*) from s_user_role where userId = '" + userId + "' and roleId = '" + roleId + "'");
+        Query queryCount = entityManager.createNativeQuery(sConditionCount.toString());
+        Object obj = queryCount.getSingleResult();
+        int i = Integer.valueOf(String.valueOf(obj));
+        if(i>0){
+            sFhz = "1";
+        }
+        return sFhz;
+    }
 
 }
