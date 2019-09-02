@@ -5,12 +5,14 @@ import nist.module.datamanage.service.ModuleService;
 import nist.module.datamanage.service.UserService;
 import nist.module.datamanage.util.ResponseUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import java.util.List;
 import java.util.Map;
 
 @Controller
@@ -37,5 +39,10 @@ public class ModuleController {
     public String delete(@RequestBody ModuleEntity moduleEntity){
         moduleService.delete(moduleEntity);
         return ResponseUtil.writer("0","success");
+    }
+
+    @RequestMapping(value = "/queryAll",method = {RequestMethod.GET,RequestMethod.POST})
+    public String queryAll(){
+        return ResponseUtil.writer("0","success",moduleService.getModuleListAll());
     }
 }

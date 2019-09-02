@@ -58,4 +58,16 @@ public class ModuleService {
     public void delete(ModuleEntity moduleEntity){
         moduleRepository.delete(moduleEntity);
     }
+
+    //4.查询所有
+    public List<ModuleEntity> getModuleListAll(){
+        //1.获得条件
+        StringBuilder sCondition = new StringBuilder("select * from s_module where 1 = 1");
+
+        //2.语句执行
+        Query query = entityManager.createNativeQuery(sCondition.toString(),ModuleEntity.class);
+        List<ModuleEntity> dataList = query.getResultList(); //查询结果
+
+        return dataList;
+    }
 }
