@@ -193,7 +193,7 @@
                     })
                 },
 
-                //3.角色关联用户-登记修改
+                //3.角色关联用户
                 pop_roleUser: function (data) {
                     var sparam = {};
                     sparam.title = '角色关联用户'; //标题
@@ -207,7 +207,18 @@
                     global.pop(sparam);
                 },
 
-                //******(3)角色关联模块******
+                //4.角色关联模块
+                pop_roleModule: function (data) {
+                    var sparam = {};
+                    sparam.title = '角色关联资源';
+                    sparam.width = '480px';
+                    sparam.height = '680px';
+                    sparam.id = 'roleModule';
+                    sparam.view = '../../../public/pick_module';
+                    sparam.data = data;
+                    sparam.button = 'form-submit-unit';
+                    global.pop(sparam);
+                }
 
             }
 
@@ -253,6 +264,15 @@
                 active.pop_roleUser({roleId:roleId});
             })
 
+            //3.关联模块
+            form.on('submit(add_module)',function () {
+                var roleId = $('#jlbh').val();
+                if(roleId == ''){
+                    layer.msg('请先选择角色！');
+                    return
+                }
+                active.pop_roleModule({roleId:roleId});
+            })
 
             //******(3)tab监听******
             //3.监听tab分页
