@@ -23,10 +23,6 @@
                     <div class="layui-input-block" style="margin-top: 10px">
                         <button type="button" lay-submit class="layui-btn layui-btn-radius layui-btn-sm"
                             lay-filter="add">添加资源</button>
-                        <button type="button" lay-submit class="layui-btn layui-btn-radius layui-btn-sm"
-                            lay-filter="add_role">关联角色</button>
-                        <button type="button" lay-submit class="layui-btn layui-btn-radius layui-btn-sm"
-                            lay-filter="add_user">关联用户</button>
                     </div>
                 </div>
                 <!--资源名称、链接地址-->
@@ -38,7 +34,7 @@
                     </div>
                     <label class="layui-form-label"><span style="color: red;">*</span>链接地址</label>
                     <div class="layui-input-inline">
-                        <input type="text" id="url" name="url" placeholder="请输入链接地址" autocomplete="off"
+                        <input type="text" id="url" name="url" style="width: 450px" placeholder="请输入链接地址" autocomplete="off"
                             class="layui-input">
                     </div>
                 </div>
@@ -48,11 +44,9 @@
         <div class="layui-tab" style="height:85%">
             <ul class="layui-tab-title">
                 <li class="layui-this">关联角色</li>
-                <li>关联用户</li>
             </ul>
             <div class="layui-tab-content">
                 <div class="layui-tab-item layui-show">内容1</div>
-                <div class="layui-tab-item">内容2</div>
             </div>
         </div>
     </div>
@@ -107,7 +101,7 @@
                         dataFormat: "list", //配置data风格为list
                         checkbar: true, //复选框
                         request: {},
-                        response: { statusName: "code", statusCode: 0, message: "msg", treeId: "jlbh", parentId: "parentId", title: "name" },
+                        response: { statusName: "code", statusCode: 0, message: "msg", treeId: "jlbh", parentId: "parentId", title: "name",basicData:"url"},
 
                         //3.显示设置
                         ficon: [1, -1],
@@ -125,8 +119,8 @@
                 pop: function (data) {
                     var sparam = {};
                     sparam.title = "资源登记"; //标题
-                    sparam.width = "1200px"; //宽度
-                    sparam.height = "680px"; //高度
+                    sparam.width = "900px"; //宽度
+                    sparam.height = "500px"; //高度
                     sparam.id = "module1"; //内容div的id
                     sparam.view = "../view"; //加载的页面路径
                     sparam.url = "module/save";
@@ -203,8 +197,9 @@
             //1.监听角色树节点
             dtree.on("node('dtreeModule')", function (obj) {
                 var param = obj.param;
+                console.log(param);
                 $("#name").val(param.context); //记录编号
-                //$("#name").val(param.context); //角色名称
+                $("#url").val(param.basicData); //角色名称
             });
 
             //2.监听按钮
@@ -216,52 +211,7 @@
 
             })
 
-            //1.监听行工具栏
-            table.on("tool(table-moduleTable)", function (obj) {
-                var sEvent = obj.event;
-                if (sEvent == "edit") {
-                    active.pop(obj.data);
-                } else if (sEvent == "del") {
-                    debugger
-                    var sparam = {};
-                    sparam.url = "module/del",
-                        sparam.method = "post",
-                        sparam.entity = { jlbh: obj.data.jlbh },
-                        //定义删除回调函数
-                        sparam.callback = function () {
-                            debugger
-                            layer.closeAll();
-                            active.tableRelaod({});
-                        }
-                    //删除提示
-                    layer.open({
-                        content: "您确定删除此纪录吗？",
-                        btn: ["确定", "取消"],
-                        yes: function (index, layero) {
-                            global.commonDel(sparam);
-                        }
-                    })
-                }
-            })
-
-            //2.监听头工具栏
-            table.on("toolbar(table-moduleTable)", function (obj) {
-                switch (obj.event) {
-                    case "insert":
-                        active.pop({});
-                        debugger
-                        active.tableRelaod({});
-                };
-            })
-
-
-
-            //4.清空
-            form.on("submit(clear)", function (data) {
-                var sCondition = layui.jutil.empty(data.field);
-                form.val("query-moduleTable", sCondition);
-                active.tableRelaod(sCondition);
-            })
+            
         });
     </script>
 </body>
