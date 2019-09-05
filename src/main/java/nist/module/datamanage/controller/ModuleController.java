@@ -42,7 +42,8 @@ public class ModuleController {
     }
 
     @RequestMapping(value = "/queryAll",method = {RequestMethod.GET,RequestMethod.POST})
-    public String queryAll(){
-        return ResponseUtil.writer("0","success",moduleService.getModuleListAll());
+    public String queryAll(@Param("roleId") String roleId){
+        return ResponseUtil.writer("0","success",moduleService.getModuleListAll(roleId));
     }
+
 }

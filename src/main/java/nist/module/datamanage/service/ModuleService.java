@@ -60,7 +60,7 @@ public class ModuleService {
     }
 
     //4.查询所有
-    public List<ModuleEntity> getModuleListAll(){
+    public List<ModuleEntity> getModuleListAll(String roleId){
         //1.获得条件
         StringBuilder sCondition = new StringBuilder("select * from s_module where 1 = 1");
 
@@ -68,6 +68,28 @@ public class ModuleService {
         Query query = entityManager.createNativeQuery(sCondition.toString(),ModuleEntity.class);
         List<ModuleEntity> dataList = query.getResultList(); //查询结果
 
+        //3.判断是否已经关联角色
+        if(!"".equals(roleId) && roleId != null){
+            for(int i=0;i<dataList.size();i++){
+                String sFhz = this.isExists(roleId,dataList.get(i).getJlbh());
+                    dataList.get(i).setCheckArr(sFhz);
+            }
+        }
+
+        //4.结果返回
         return dataList;
+    }
+
+    //5.判断是否已关联角色
+    public String isExists(String roleId,String resourceId){
+        String sFhz = "0";
+        StringBuilder sConditionCount = new StringBuilder("select count(*) from s_role_module where roleId = '" + roleId + "' and resourceId = '" + resourceId + "'");
+        Query queryCount = entityManager.createNativeQuery(sConditionCount.toString());
+        Object obj = queryCount.getSingleResult();
+        int i = Integer.valueOf(String.valueOf(obj));
+        if(i>0){
+            sFhz = "1";
+        }
+        return sFhz;
     }
 }
