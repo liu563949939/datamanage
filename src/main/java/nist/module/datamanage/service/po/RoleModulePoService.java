@@ -21,7 +21,7 @@ public class RoleModulePoService {
     public Map<String,Object> getDataList(RoleEntity roleEntity){
         Map<String,Object> sFhz = new HashMap<String,Object>();
         //1.获得条件
-        StringBuilder sCondition = new StringBuilder("select t.jlbh,t.resourceId,t.roleId,t.createTime,v.`name` from s_role_module t,s_module v where t.resourceId = v.jlbh and 1 = 1");
+        StringBuilder sCondition = new StringBuilder("select t.jlbh,t.resourceId,t.roleId,t.createTime,v.name` from s_role_module t,s_module v where t.resourceId = v.jlbh and 1 = 1");
         StringBuilder sConditionCount = new StringBuilder("select count(*) from s_role_module t,s_module v where t.resourceId = v.jlbh and 1 = 1");
         //2.条件处理
         if(roleEntity.getJlbh() != null && !roleEntity.getJlbh().equals("")){
