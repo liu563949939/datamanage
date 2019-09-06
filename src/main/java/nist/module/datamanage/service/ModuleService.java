@@ -81,9 +81,9 @@ public class ModuleService {
     }
 
     //5.判断是否已关联角色
-    public String isExists(String roleId,String resourceId){
+    public String isExists(String roleId,String moduleId){
         String sFhz = "0";
-        StringBuilder sConditionCount = new StringBuilder("select count(*) from s_role_module where roleId = '" + roleId + "' and resourceId = '" + resourceId + "'");
+        StringBuilder sConditionCount = new StringBuilder("select count(*) from s_role_module where roleId = '" + roleId + "' and moduleId = '" + moduleId + "'");
         Query queryCount = entityManager.createNativeQuery(sConditionCount.toString());
         Object obj = queryCount.getSingleResult();
         int i = Integer.valueOf(String.valueOf(obj));

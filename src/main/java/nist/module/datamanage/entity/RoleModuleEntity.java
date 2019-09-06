@@ -15,7 +15,7 @@ public class RoleModuleEntity {
     @Id
     private String jlbh;
     private String roleId;
-    private String resourceId;
+    private String moduleId;
     private String createTime;
 
     public String getJlbh() {
@@ -34,12 +34,12 @@ public class RoleModuleEntity {
         this.roleId = roleId;
     }
 
-    public String getResourceId() {
-        return resourceId;
+    public String getModuleId() {
+        return moduleId;
     }
 
-    public void setResourceId(String resourceId) {
-        this.resourceId = resourceId;
+    public void setModuleId(String moduleId) {
+        this.moduleId = moduleId;
     }
 
     public String getCreateTime() {
