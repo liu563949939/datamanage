@@ -23,4 +23,5 @@ public class UserRoleService {
     public void del(UserRoleEntity userRoleEntity){
         userRoleRepository.del(userRoleEntity.getRoleId());
     }
+
 }

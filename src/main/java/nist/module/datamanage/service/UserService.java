@@ -97,4 +97,9 @@ public class UserService {
         return sFhz;
     }
 
+
+    //6.根据用户名和密码查找
+    public List<UserEntity> findByName(UserEntity userEntity){
+        return userRepository.findByName(userEntity);
+    }
 }

@@ -45,4 +45,12 @@ public class UserController {
         return ResponseUtil.writer("0","success",dataList);
     }
 
+    /**
+     * 根据用户名和密码查找
+     */
+    @RequestMapping(value = "/findByName",method = {RequestMethod.GET,RequestMethod.POST})
+    public String findByName(@RequestBody UserEntity userEntity) {
+        List<UserEntity> dataList = userService.findByName(userEntity);
+        return ResponseUtil.writer("0","success",dataList);
+    }
 }

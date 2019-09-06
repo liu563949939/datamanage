@@ -2,119 +2,87 @@
 <html>
 
 <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-    <title>layout 后台大布局 - Layui</title>
     <link rel="stylesheet" href="/ui/layui/css/layui.css">
 </head>
 
-<body class="layui-layout-body">
-    <div class="layui-layout layui-layout-admin">
-        <div class="layui-header">
-            <div class="layui-logo">通用管理平台</div>
-            <!-- 头部区域（可配合layui已有的水平导航） -->
-            <ul class="layui-nav layui-layout-left">
-                <li class="layui-nav-item"><a href="">控制台</a></li>
-                <li class="layui-nav-item"><a href="">商品管理</a></li>
-                <li class="layui-nav-item"><a href="">用户</a></li>
-                <li class="layui-nav-item">
-                    <a href="javascript:;">其它系统</a>
-                    <dl class="layui-nav-child">
-                        <dd><a href="">邮件管理</a></dd>
-                        <dd><a href="">消息管理</a></dd>
-                        <dd><a href="">授权管理</a></dd>
-                    </dl>
-                </li>
-            </ul>
-            <ul class="layui-nav layui-layout-right">
-                <li class="layui-nav-item">
-                    <a href="javascript:;">
-                        <img src="http://t.cn/RCzsdCq" class="layui-nav-img">
-                        刘林
-                    </a>
-                    <dl class="layui-nav-child">
-                        <dd><a href="">基本资料</a></dd>
-                        <dd><a href="">安全设置</a></dd>
-                    </dl>
-                </li>
-                <li class="layui-nav-item"><a href="">退了</a></li>
-            </ul>
-        </div>
-
-        <div class="layui-side layui-bg-black">
-            <div class="layui-side-scroll">
-                <!-- 左侧导航区域（可配合layui已有的垂直导航） -->
-                <ul class="layui-nav layui-nav-tree" lay-filter="nav_left">
-                    <li class="layui-nav-item layui-nav-itemed">
-                        <a class="" href="javascript:;">资料管理</a>
-                        <dl class="layui-nav-child">
-                            <dd><a href="javascript:;" data-url="menu1.html" data-id='1' data-text="后台菜单">资料查询</a></dd>
-                            <dd><a href="javascript:;">日报管理</a></dd>
-                            <dd><a href="javascript:;">代办事项</a></dd>
-                        </dl>
-                    </li>
-                    <li class="layui-nav-item">
-                        <a href="javascript:;">权限管理</a>
-                        <dl class="layui-nav-child">
-                            <dd><a href="javascript:;" data-text="用户管理">用户管理</a></dd>
-                            <dd><a href="javascript:;" data-text="角色管理">角色管理</a></dd>
-                            <dd><a href="javascript:;" data-text="资源管理">资源管理</a></dd>
-                            <dd><a href="javascript:;">字典管理</a></dd>
-                        </dl>
-                    </li>
-                </ul>
+<body>
+    <div id='login' style="width:100%;" >
+        <form class="layui-form" id='loginInfo' style="border:1px dotted;background:yellow"">
+            <div class="layui-form-item" style="margin-top:20px">
+                <label class="layui-form-label">用户名：</label>
+                <div class="layui-input-inline">
+                    <input type="text" name="username" lay-verify="title" autocomplete="off" placeholder="请输入标题"
+                        class="layui-input">
+                </div>
             </div>
-        </div>
-
-        <div class="layui-body" id='body'>
-            <!-- 内容主体区域 -->
-            <!-- <iframe src="./module/views/manage/list.html" width="100%" height="100%" frameborder="0"></iframe> -->
-        </div>
-
-        <div class="layui-footer">
-            <!-- 底部固定区域 -->
-            © 南京公安研究院 - 刘林
-        </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">密码：</label>
+                <div class="layui-input-inline">
+                    <input type="text" name="password" lay-verify="title" autocomplete="off" placeholder="请输入标题"
+                        class="layui-input">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <button type="button" lay-submit lay-filter="login" class="layui-btn" style="margin-left:200px">登录</button>
+                <button type="button" class="layui-btn">注册</button>
+            </div>
+        </form>
     </div>
-
-
 
     <script src="/ui/layui/layui.js"></script>
     <script>
-        //JavaScript代码区域
-        layui.use(['element'], function () {
+        layui.extend({
+            index: '{/}/ui/layui/core/index', //核心模块
+            exd: '{/}/ui/layui/extends/extend' //扩展模块
+        }).use(['index', 'exd'], function () {
             var $ = layui.jquery,
-                element = layui.element;
-            debugger
-            //4.事件监听
-            element.on('nav(nav_left)', function (elem) {
-                debugger
-                var text = elem.attr('data-text');
-                switch (text) {
-                    case '后台菜单':
-                        $('#body').empty();
-                        $('#body').append('<iframe src="/module/views/manage/list.html" width="100%" height="99%" frameborder="0"></iframe>');
-                        break;
-                    //***系统管理***
-                    case '用户管理':
-                        $('#body').empty();
-                        $('#body').append('<iframe src="/module/views/mhxt/user/list.html" width="100%" height="99%" frameborder="0"></iframe>');
-                        break;
-                    //***角色管理***
-                    case '角色管理':
-                        $('#body').empty();
-                        $('#body').append('<iframe src="/module/views/mhxt/role/list.html" width="100%" height="99%" frameborder="0"></iframe>');
-                        break;
-                    //***资源管理***
-                    case '资源管理':
-                        $('#body').empty();
-                        $('#body').append('<iframe src="/module/views/mhxt/module/list.html" width="100%" height="99%" frameborder="0"></iframe>');
-                        break;
+                global = layui.global,
+                form = layui.form;
+
+            //1.变量定义
+            var sHeiht = $(window).height(),
+                sWidth = $(window).width(),
+                sHeiht_center = (sHeiht/2 - 100).toString() + 'px';
+                sWidth_center = (sWidth/2 - 240).toString() + 'px';
+
+
+            //2.方法定义
+            var active = {
+                //1.登陆判断
+                login: function (data) {
+                    debugger
+                    var sParam = {};
+                    sParam.url = 'user/findByName';
+                    sParam.condition = data;
+                    sParam.type = 'dic';
+                    sParam.callback = active.callback;
+                    global.commonQuery(sParam); //查询
+                },
+
+                //2.登陆回调
+                callback: function (data) {
+                    debugger
+                    var fhz = data.data;
+                    if(fhz.length > 0 ){
+                        window.location.href= 'main.html';
+                    }else{
+                        alert('登陆失败')
+                    }
                 }
-            });
 
+            }
 
-        });
+            //3.初始化
+            $('#login').css('height', sHeiht);
+            $('#loginInfo').css({width:'480px',height:'200px','margin-top': sHeiht_center,'margin-left':sWidth_center});
+
+            //4.事件监听
+            //1.监听表单
+            form.on('submit(login)',function (data) {
+                active.login(data.field);
+            })
+
+        })
     </script>
 </body>
 
