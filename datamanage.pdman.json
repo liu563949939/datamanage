@@ -405,6 +405,158 @@
             }
           ],
           "chnname": "角色表"
+        },
+        {
+          "title": "s_module",
+          "fields": [
+            {
+              "name": "jlbh",
+              "type": "primary key",
+              "remark": "",
+              "chnname": "资源记录编号"
+            },
+            {
+              "name": "parentId",
+              "type": "foreign key",
+              "remark": "",
+              "chnname": "资源父编号"
+            },
+            {
+              "name": "name",
+              "type": "ShortString",
+              "remark": "",
+              "chnname": "资源名称"
+            },
+            {
+              "name": "url",
+              "type": "ShortString",
+              "remark": "",
+              "chnname": "资源链接地址"
+            },
+            {
+              "name": "createTime",
+              "type": "djsj",
+              "remark": "",
+              "chnname": "资源创建时间"
+            }
+          ],
+          "indexs": [],
+          "headers": [
+            {
+              "fieldName": "chnname",
+              "relationNoShow": false
+            },
+            {
+              "fieldName": "name",
+              "relationNoShow": false
+            },
+            {
+              "fieldName": "type",
+              "relationNoShow": false
+            },
+            {
+              "fieldName": "dataType",
+              "relationNoShow": true
+            },
+            {
+              "fieldName": "remark",
+              "relationNoShow": true
+            },
+            {
+              "fieldName": "pk",
+              "relationNoShow": false
+            },
+            {
+              "fieldName": "notNull",
+              "relationNoShow": true
+            },
+            {
+              "fieldName": "autoIncrement",
+              "relationNoShow": true
+            },
+            {
+              "fieldName": "defaultValue",
+              "relationNoShow": true
+            },
+            {
+              "fieldName": "relationNoShow",
+              "relationNoShow": true
+            }
+          ],
+          "chnname": "资源表"
+        },
+        {
+          "title": "s_role_module",
+          "fields": [
+            {
+              "name": "jlbh",
+              "type": "primary key",
+              "remark": "",
+              "chnname": "角色资源记录编号"
+            },
+            {
+              "name": "roleId",
+              "type": "foreign key",
+              "remark": "",
+              "chnname": "角色资源角色编号"
+            },
+            {
+              "name": "moduleId",
+              "type": "foreign key",
+              "remark": "",
+              "chnname": "角色资源资源编号"
+            },
+            {
+              "name": "createTime",
+              "type": "djsj",
+              "remark": "",
+              "chnname": "角色资源创建时间"
+            }
+          ],
+          "indexs": [],
+          "headers": [
+            {
+              "fieldName": "chnname",
+              "relationNoShow": false
+            },
+            {
+              "fieldName": "name",
+              "relationNoShow": false
+            },
+            {
+              "fieldName": "type",
+              "relationNoShow": false
+            },
+            {
+              "fieldName": "dataType",
+              "relationNoShow": true
+            },
+            {
+              "fieldName": "remark",
+              "relationNoShow": true
+            },
+            {
+              "fieldName": "pk",
+              "relationNoShow": false
+            },
+            {
+              "fieldName": "notNull",
+              "relationNoShow": true
+            },
+            {
+              "fieldName": "autoIncrement",
+              "relationNoShow": true
+            },
+            {
+              "fieldName": "defaultValue",
+              "relationNoShow": true
+            },
+            {
+              "fieldName": "relationNoShow",
+              "relationNoShow": true
+            }
+          ],
+          "chnname": "角色关联资源表"
         }
       ],
       "graphCanvas": {
