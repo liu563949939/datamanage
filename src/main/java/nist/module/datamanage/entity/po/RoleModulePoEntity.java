@@ -10,7 +10,7 @@ public class RoleModulePoEntity {
     @Id
     private String jlbh;
     private String roleId;
-    private String resourceId;
+    private String moduleId;
     private String createTime;
     private String name;
 
@@ -30,14 +30,6 @@ public class RoleModulePoEntity {
         this.roleId = roleId;
     }
 
-    public String getResourceId() {
-        return resourceId;
-    }
-
-    public void setResourceId(String resourceId) {
-        this.resourceId = resourceId;
-    }
-
     public String getCreateTime() {
         return createTime;
     }
@@ -46,11 +38,11 @@ public class RoleModulePoEntity {
         this.createTime = createTime;
     }
 
-    public String getName() {
-        return name;
-    }
+    public String getModuleId() { return moduleId; }
 
-    public void setName(String name) {
-        this.name = name;
-    }
+    public void setModuleId(String moduleId) { this.moduleId = moduleId; }
+
+    public String getName() { return name; }
+
+    public void setName(String name) { this.name = name; }
 }

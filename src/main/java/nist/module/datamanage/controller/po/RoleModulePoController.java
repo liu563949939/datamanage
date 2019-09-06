@@ -1,5 +1,6 @@
 package nist.module.datamanage.controller.po;
 
+import nist.module.datamanage.entity.ModuleEntity;
 import nist.module.datamanage.entity.RoleEntity;
 import nist.module.datamanage.service.po.RoleModulePoService;
 import nist.module.datamanage.util.ResponseUtil;
@@ -22,6 +23,12 @@ public class RoleModulePoController {
     @RequestMapping(value = "/query", method = {RequestMethod.GET, RequestMethod.POST})
     public String Query(@RequestBody RoleEntity roleEntity){
         Map<String,Object> result = roleModulePoService.getDataList(roleEntity);
+        return ResponseUtil.writer("0","success",result.get("dataList"),(Long) result.get("count"));
+    }
+
+    @RequestMapping(value = "/queryRole", method = {RequestMethod.GET, RequestMethod.POST})
+    public String Query(@RequestBody ModuleEntity moduleEntity){
+        Map<String,Object> result = roleModulePoService.getDataList_role(moduleEntity);
         return ResponseUtil.writer("0","success",result.get("dataList"),(Long) result.get("count"));
     }
 }
